@@ -776,17 +776,39 @@ footer { background:var(--surface);border-top:1px solid rgba(184,150,90,0.12);pa
     // Nome barberia
     body = body.replace(/Torregrossa barber/g, NOME);
 
-    // Indirizzo
+    // Indirizzo — tutte le varianti
     body = body.replace(/Piazza Natale Tommaso 6/g, INDIRIZZO);
+    body = body.replace(/Piazza Natale Tommaso(?!\s*[0-9])/g, INDIRIZZO);
 
     // CAP + città
     body = body.replace(/90147 Palermo \(PA\)/g, CAP_CITTA);
     body = body.replace(/90147 Palermo/g, CAP_CITTA.replace(' (PA)',''));
 
-    // Solo "Palermo" nei testi descrittivi (non nei link Google)
+    // Quartiere e città in testi descrittivi
     body = body.replace(/quartiere Tommaso Natale di Palermo/g, 'quartiere ' + QUARTIERE);
+    body = body.replace(/nel quartiere Tommaso Natale di Palermo/g, 'nel quartiere ' + QUARTIERE);
     body = body.replace(/nel quartiere Tommaso Natale/g, 'nel quartiere ' + QUARTIERE);
-    body = body.replace(/Piazza Natale Tommaso(?!\s*[0-9])/g, INDIRIZZO.split(',')[0].split(' ').slice(0,-1).join(' ') || INDIRIZZO);
+    body = body.replace(/Tommaso Natale di Palermo/g, QUARTIERE);
+    body = body.replace(/Tommaso Natale/g, QUARTIERE);
+
+    // "Palermo" standalone nei testi (non nei link Google Maps)
+    body = body.replace(/barbiere di riferimento nel quartiere [^\<]*/g, 'barbiere di riferimento nel quartiere ' + QUARTIERE);
+    body = body.replace(/Il barbiere di fiducia nel quartiere [^\<]*/g, 'Il barbiere di fiducia nel quartiere ' + QUARTIERE + '.');
+    body = body.replace(/grooming maschile nel quartiere [^,]*, in [^\<.]*/g, 'grooming maschile nel quartiere ' + QUARTIERE + ', in ' + INDIRIZZO + '.');
+
+    // Hero eyebrow "Palermo · Piazza Natale Tommaso"
+    body = body.replace(/Palermo · Piazza Natale Tommaso/g, CAP_CITTA.split(' ').slice(-1)[0] + ' · ' + INDIRIZZO);
+
+    // Loader subtitle "Torregrossa barber · Palermo"
+    body = body.replace(/· Palermo<\/div>/g, '· ' + CAP_CITTA.split(' ').slice(-1)[0] + '</div>');
+
+    // Overlay menu info line
+    body = body.replace(/Piazza Natale Tommaso 6 · Palermo/g, INDIRIZZO + ' · ' + CAP_CITTA.split(' ').slice(-1)[0]);
+
+    // Google Calendar link location
+    body = body.replace(/Piazza Natale Tommaso 6, Palermo/g, INDIRIZZO + ', ' + CAP_CITTA.split(' ').slice(-1)[0]);
+
+    // Ottimo barbiere su Palermo nelle recensioni — lasciamo stare, è una citazione reale
 
     // Telefono nei testi e negli href
     body = body.replace(/\+39 328 096 2635/g, TEL_DISPLAY);

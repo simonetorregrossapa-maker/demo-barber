@@ -1,0 +1,2497 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0"/>
+<meta name="description" content="Torregrossa barber — Barbiere a Palermo, Piazza Natale Tommaso 6. Taglio, barba, rasatura. +39 328 096 2635"/>
+<meta name="keywords" content="barbiere palermo, Torregrossa barber palermo, taglio capelli palermo, barba palermo, Torregrossa barber"/>
+<meta property="og:title" content="Torregrossa barber — Palermo"/>
+<meta property="og:description" content="Il tuo barbiere di fiducia a Palermo. Piazza Natale Tommaso 6."/>
+<title>Torregrossa barber — Palermo</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+
+<!-- Supabase SDK -->
+<script async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" onload="initSupabase()"></script>
+<!-- EmailJS — email di conferma al cliente -->
+
+<style>
+/* ===== COOKIE BANNER ===== */
+#cookieBanner{position:fixed;bottom:0;left:0;right:0;background:#1a1712;border-top:1px solid rgba(200,169,110,0.25);padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.8rem;z-index:99999;font-family:'Outfit',sans-serif;}
+#cookieBanner p{margin:0;font-size:0.75rem;color:#a89880;line-height:1.5;flex:1;min-width:200px;}
+#cookieBanner a{color:#c8a96e;text-decoration:underline;}
+.cookie-btns{display:flex;gap:0.6rem;flex-shrink:0;}
+.cookie-acc{background:#c8a96e;color:#0e0c08;border:none;padding:0.5rem 1.2rem;font-size:0.72rem;font-weight:600;letter-spacing:0.08em;cursor:pointer;border-radius:3px;font-family:'Outfit',sans-serif;}
+.cookie-rej{background:transparent;color:#7a7060;border:1px solid #3a3428;padding:0.5rem 1.2rem;font-size:0.72rem;cursor:pointer;border-radius:3px;font-family:'Outfit',sans-serif;}
+/* ===== CONFIG ===== */
+/*
+  SUPABASE SETUP — sostituisci questi valori dopo aver creato il progetto:
+  SUPABASE_URL  = https://xxxx.supabase.co
+  SUPABASE_ANON = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+*/
+
+/* ===== RESET & ROOT ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --gold: #b8965a;
+  --gold-light: #d4b483;
+  --gold-dark: #8a6d3f;
+  --black: #0a0906;
+  --off-white: #f7f3ed;
+  --warm-gray: #c8bfb0;
+  --surface: #111009;
+  --surface-2: #1a1712;
+  --surface-3: #221f19;
+  --dim: #7a7060;
+  --expo: cubic-bezier(0.16,1,0.3,1);
+  --green: #4ade80;
+  --red: #f87171;
+}
+html { scroll-behavior: smooth; font-size: 16px; }
+h1,h2,h3 { word-break: keep-all; hyphens: none; -webkit-hyphens: none; }
+body {
+  background: var(--black); color: var(--off-white);
+  font-family: 'Outfit', sans-serif; font-weight: 300;
+  overflow-x: hidden; -webkit-font-smoothing: antialiased;
+}
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-thumb { background: var(--gold-dark); }
+
+.serif { font-family: 'Cormorant Garamond', serif; }
+.gold  { color: var(--gold-light); font-style: italic; }
+.label {
+  font-size: 0.6rem; letter-spacing: 0.45em; text-transform: uppercase;
+  color: var(--gold); display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1rem;
+}
+.label::before { content:''; width: 24px; height: 1px; background: var(--gold); flex-shrink: 0; }
+h2 { font-family:'Cormorant Garamond',serif; font-weight:300; font-size:clamp(2rem,5vw,4rem); line-height:1.05; letter-spacing:-0.02em; }
+
+section { padding: clamp(3rem,8vw,7rem) clamp(1.2rem,5vw,4rem); }
+.container { max-width: 1200px; margin: 0 auto; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem,5vw,5rem); align-items: center; }
+@media(max-width:768px) { .grid-2 { grid-template-columns:1fr; gap:2.5rem; } .hide-mobile { display:none!important; } }
+
+.btn {
+  display:inline-flex; align-items:center; gap:0.6rem;
+  padding:0.9rem 2rem; font-size:0.7rem; font-weight:600;
+  letter-spacing:0.28em; text-transform:uppercase;
+  border:none; cursor:pointer; text-decoration:none;
+  transition:all 0.35s var(--expo); -webkit-tap-highlight-color:transparent;
+}
+.btn-gold   { background:var(--gold); color:var(--black); }
+.btn-gold:hover { background:var(--gold-light); }
+.btn-outline { background:transparent; color:var(--off-white); border:1px solid rgba(255,255,255,0.25); }
+.btn-outline:hover { border-color:var(--gold); color:var(--gold); }
+.btn-black  { background:var(--black); color:var(--gold); }
+.btn-black:hover { background:#1a1712; }
+
+.reveal   { opacity:0; transform:translateY(32px); transition:opacity 0.85s var(--expo),transform 0.85s var(--expo); }
+.reveal.visible { opacity:1; transform:translateY(0); }
+.reveal-l { opacity:0; transform:translateX(-32px); transition:opacity 0.85s var(--expo),transform 0.85s var(--expo); }
+.reveal-l.visible { opacity:1; transform:translateX(0); }
+.reveal-r { opacity:0; transform:translateX(32px); transition:opacity 0.85s var(--expo),transform 0.85s var(--expo); }
+.reveal-r.visible { opacity:1; transform:translateX(0); }
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}.d5{transition-delay:.5s}
+
+/* ═══════════════════════════════════════
+   LOADER PREMIUM — TENDINA SPLIT
+═══════════════════════════════════════ */
+#loader {
+  position:fixed;inset:0;z-index:9000;overflow:hidden;pointer-events:all;
+}
+#loader.out { pointer-events:none; }
+
+/* Tendine — costituiscono lo sfondo scuro */
+.ldr-curtain {
+  position:absolute;left:0;right:0;background:var(--black);z-index:1;
+  transition:transform 1.35s cubic-bezier(0.76,0,0.24,1) 0.38s;
+}
+.ldr-curtain-t { top:0;height:50.5%; }
+.ldr-curtain-b { bottom:0;height:50.5%; }
+#loader.out .ldr-curtain-t { transform:translateY(-101%); }
+#loader.out .ldr-curtain-b { transform:translateY(101%); }
+
+/* Contenuto centrale — svanisce prima che le tendine si aprano */
+.ldr-content {
+  position:relative;z-index:3;
+  display:flex;flex-direction:column;align-items:center;
+  transition:opacity 0.3s ease 0s;
+}
+#loader.out .ldr-content { opacity:0; }
+
+/* Vignette radiale */
+.ldr-vignette {
+  position:absolute;inset:0;pointer-events:none;z-index:2;
+  background:radial-gradient(ellipse 65% 65% at 50% 50%,
+    rgba(184,150,90,0.06) 0%,transparent 70%);
+  animation:ldrGlowPulse 4s ease-in-out infinite;
+}
+@keyframes ldrGlowPulse { 0%,100%{opacity:.5} 50%{opacity:1} }
+
+/* Particelle gold */
+.ldr-particles {
+  position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:2;
+}
+.ldr-p {
+  position:absolute;border-radius:50%;background:var(--gold);opacity:0;
+  animation:ldrParticle var(--pd,4s) var(--pd2,0s) ease-in-out infinite;
+}
+@keyframes ldrParticle {
+  0%   { opacity:0; transform:translateY(0) scale(1); }
+  15%  { opacity:.75; }
+  85%  { opacity:.12; }
+  100% { opacity:0; transform:translateY(-160px) scale(0); }
+}
+
+/* Angoli decorativi */
+.ldr-corner {
+  position:absolute;z-index:3;
+  width:clamp(36px,5.5vw,60px);height:clamp(36px,5.5vw,60px);
+  opacity:0;animation:ldrCornerFade 0.9s var(--expo) 0.25s forwards;
+}
+.ldr-corner::before,.ldr-corner::after { content:'';position:absolute;background:var(--gold); }
+.ldr-corner::before { width:100%;height:1px;top:0;left:0; }
+.ldr-corner::after  { width:1px;height:100%;top:0;left:0; }
+.ldr-corner.tl { top:clamp(1.5rem,4vw,3rem);  left:clamp(1.5rem,4vw,3rem);  }
+.ldr-corner.tr { top:clamp(1.5rem,4vw,3rem);  right:clamp(1.5rem,4vw,3rem); transform:scaleX(-1); }
+.ldr-corner.bl { bottom:clamp(1.5rem,4vw,3rem);left:clamp(1.5rem,4vw,3rem); transform:scaleY(-1); }
+.ldr-corner.br { bottom:clamp(1.5rem,4vw,3rem);right:clamp(1.5rem,4vw,3rem);transform:scale(-1); }
+@keyframes ldrCornerFade { to{opacity:1} }
+
+/* Linea orizzontale superiore */
+.ldr-hline {
+  height:1px;width:0;
+  background:linear-gradient(to right,transparent,var(--gold),transparent);
+  margin-bottom:2.5rem;
+  animation:ldrLineExpand 1.1s cubic-bezier(0.16,1,0.3,1) 0.18s forwards;
+}
+@keyframes ldrLineExpand { to{width:clamp(100px,22vw,200px)} }
+
+/* Icona SVG — appare con pop */
+.ldr-icon {
+  width:clamp(42px,7vw,58px);height:clamp(42px,7vw,58px);
+  margin-bottom:1.8rem;opacity:0;transform:scale(0.65);
+  animation:ldrIconIn 0.9s cubic-bezier(0.16,1,0.3,1) 0.72s forwards;
+}
+@keyframes ldrIconIn { to{opacity:1;transform:scale(1)} }
+
+/* Stroke-draw sequenziale sui path del logo */
+.ldr-icon svg .draw { stroke-dasharray:300;stroke-dashoffset:300; }
+.ldr-icon svg .draw:nth-child(1) { animation:ldrStroke 1.1s cubic-bezier(0.16,1,0.3,1) 0.88s forwards; }
+.ldr-icon svg .draw:nth-child(2) { animation:ldrStroke 1.1s cubic-bezier(0.16,1,0.3,1) 1.05s forwards; }
+.ldr-icon svg .draw:nth-child(3) { animation:ldrStroke 1.1s cubic-bezier(0.16,1,0.3,1) 1.25s forwards; }
+.ldr-icon svg .draw:nth-child(4) { animation:ldrStroke 1.0s cubic-bezier(0.16,1,0.3,1) 1.42s forwards; }
+.ldr-icon svg .draw:nth-child(5) { stroke-dasharray:25;stroke-dashoffset:25; animation:ldrStroke 0.7s cubic-bezier(0.16,1,0.3,1) 1.62s forwards; }
+@keyframes ldrStroke { to{stroke-dashoffset:0} }
+
+.ldr-icon-glow {
+  filter:drop-shadow(0 0 8px rgba(184,150,90,0.4));
+  animation:ldrIconGlow 2.8s ease-in-out 2.3s infinite;
+}
+@keyframes ldrIconGlow {
+  0%,100%{filter:drop-shadow(0 0 5px rgba(184,150,90,0.3))}
+  50%    {filter:drop-shadow(0 0 22px rgba(184,150,90,0.8))}
+}
+
+/* Nome con clip-path sweep */
+.ldr-name {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1.5rem,5.2vw,2.9rem);
+  font-weight:300;letter-spacing:0.42em;text-transform:uppercase;
+  color:var(--off-white);
+  clip-path:inset(0 100% 0 0);
+  animation:ldrNameReveal 1.4s cubic-bezier(0.16,1,0.3,1) 1.22s forwards;
+  white-space:nowrap;
+}
+@keyframes ldrNameReveal { to{clip-path:inset(0 0% 0 0)} }
+
+/* Divisore */
+.ldr-divider {
+  display:flex;align-items:center;gap:0.8rem;margin:0.7rem 0;
+  opacity:0;animation:ldrFadeUp 0.7s var(--expo) 2.12s forwards;
+}
+.ldr-divider-line {
+  width:clamp(28px,5.5vw,52px);height:1px;
+  background:linear-gradient(to right,transparent,var(--gold-dark));
+}
+.ldr-divider-line.r { background:linear-gradient(to left,transparent,var(--gold-dark)); }
+.ldr-divider-star { font-size:0.5rem;color:var(--gold);animation:ldrStarSpin 8s linear 2.12s infinite; }
+@keyframes ldrStarSpin { to{transform:rotate(360deg)} }
+
+/* Sottotitolo */
+.ldr-sub {
+  font-size:0.5rem;letter-spacing:0.65em;text-transform:uppercase;color:var(--gold);
+  opacity:0;animation:ldrFadeUp 0.7s var(--expo) 2.28s forwards;
+}
+@keyframes ldrFadeUp {
+  from{opacity:0;transform:translateY(9px)}
+  to  {opacity:1;transform:translateY(0)}
+}
+
+/* Barra progresso — width e dot controllati da JS */
+.ldr-progress {
+  position:relative;width:clamp(120px,20vw,180px);
+  margin-top:2.5rem;
+  opacity:0;animation:ldrFadeUp 0.6s var(--expo) 2.45s forwards;
+}
+.ldr-progress-bg { width:100%;height:1px;background:rgba(255,255,255,0.07); }
+.ldr-progress-fill {
+  position:absolute;top:0;left:0;height:1px;width:0;
+  background:linear-gradient(to right,var(--gold-dark),var(--gold),var(--gold-light));
+  box-shadow:0 0 8px rgba(184,150,90,0.55);
+  transition:width 0.05s linear;
+}
+.ldr-progress-dot {
+  position:absolute;top:50%;left:0;
+  width:5px;height:5px;border-radius:50%;background:var(--gold);
+  box-shadow:0 0 12px rgba(184,150,90,0.95);
+  transform:translateX(-2.5px) translateY(-50%);
+  transition:left 0.05s linear;
+}
+
+/* Percentuale */
+.ldr-pct {
+  font-size:0.46rem;letter-spacing:0.38em;color:var(--dim);
+  text-align:center;margin-top:0.72rem;
+  opacity:0;animation:ldrFadeUp 0.5s var(--expo) 1s forwards;
+  font-variant-numeric:tabular-nums;
+}
+
+/* Linea bassa */
+.ldr-hline-b {
+  height:1px;width:0;
+  background:linear-gradient(to right,transparent,var(--gold),transparent);
+  margin-top:2.5rem;
+  animation:ldrLineExpand 1.1s cubic-bezier(0.16,1,0.3,1) 0.42s forwards;
+}
+
+@keyframes fadeUp { to{opacity:1;transform:translateY(0)} from{opacity:0;transform:translateY(12px)} }
+@keyframes prog   { from{width:0} to{width:100%} }
+
+/* NAV */
+.nav {
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:1.2rem clamp(1.2rem,5vw,3rem);
+  transition:all 0.5s var(--expo);
+}
+.nav.scrolled {
+  background:rgba(10,9,6,0.94);backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(184,150,90,0.12);
+  padding:0.8rem clamp(1.2rem,5vw,3rem);
+}
+.nav-logo {
+  font-family:'Cormorant Garamond',serif;font-size:1.15rem;
+  letter-spacing:0.12em;text-transform:uppercase;color:var(--off-white);
+  text-decoration:none;display:flex;align-items:center;gap:0.6rem;white-space:nowrap;
+}
+.nav-logo .star { color:var(--gold);font-size:0.7rem;animation:spin 10s linear infinite;flex-shrink:0; }
+@keyframes spin { to{transform:rotate(360deg)} }
+.nav-links { display:flex;gap:2rem;align-items:center; }
+@media(max-width:860px) { .nav-links{display:none} }
+.nav-link {
+  background:none;border:none;color:var(--warm-gray);
+  font-size:0.6rem;letter-spacing:0.3em;text-transform:uppercase;
+  cursor:pointer;transition:color 0.3s;font-family:'Outfit',sans-serif;padding:0.3rem 0;
+}
+.nav-link:hover,.nav-link.active { color:var(--gold); }
+.nav-link.active { border-bottom:1px solid var(--gold); }
+.hamburger {
+  display:flex;flex-direction:column;gap:5px;background:none;border:none;
+  cursor:pointer;padding:6px;-webkit-tap-highlight-color:transparent;
+}
+.hamburger span { display:block;width:24px;height:1px;background:var(--gold-light);transition:all 0.4s var(--expo);transform-origin:center; }
+.hamburger.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.hamburger.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+
+/* OVERLAY MENU */
+.overlay {
+  position:fixed;inset:0;z-index:999;background:rgba(10,9,6,0.98);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:clamp(1.2rem,3vh,2rem);opacity:0;pointer-events:none;transition:opacity 0.45s var(--expo);
+}
+.overlay.open { opacity:1;pointer-events:all; }
+.overlay-link {
+  font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,8vw,4.5rem);font-style:italic;font-weight:300;
+  color:var(--off-white);background:none;border:none;cursor:pointer;letter-spacing:0.05em;
+  opacity:0;transform:translateY(20px);
+  transition:opacity 0.5s var(--expo),transform 0.5s var(--expo),color 0.3s;
+  -webkit-tap-highlight-color:transparent;
+}
+.overlay.open .overlay-link { opacity:1;transform:translateY(0); }
+.overlay.open .overlay-link:nth-child(1){transition-delay:.08s}
+.overlay.open .overlay-link:nth-child(2){transition-delay:.13s}
+.overlay.open .overlay-link:nth-child(3){transition-delay:.18s}
+.overlay.open .overlay-link:nth-child(4){transition-delay:.23s}
+.overlay-link:hover { color:var(--gold); }
+.overlay-info {
+  font-size:0.65rem;letter-spacing:0.3em;text-transform:uppercase;
+  color:var(--dim);text-align:center;line-height:2;
+  opacity:0;transition:opacity 0.5s var(--expo) 0.35s;
+}
+.overlay.open .overlay-info { opacity:1; }
+
+.page { display:none; }
+.page.active { display:block; }
+
+/* HERO */
+.hero {
+  position:relative;min-height:100svh;display:flex;align-items:flex-end;
+  padding:0 clamp(1.2rem,5vw,4rem) clamp(4rem,10vw,8rem);overflow:hidden;
+}
+.hero-bg { position:absolute;inset:0;background:linear-gradient(135deg,#0a0906 0%,#1a1208 50%,#0a0906 100%); }
+.hero-img {
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  opacity:0.38;filter:grayscale(0.2) contrast(1.1);
+  animation:heroZoom 18s ease-in-out infinite alternate;
+}
+@keyframes heroZoom { to{transform:scale(1.04)} }
+.hero-overlay {
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(10,9,6,0.96) 0%,rgba(10,9,6,0.25) 60%,rgba(10,9,6,0.1) 100%);
+}
+.hero-vlines { position:absolute;inset:0;pointer-events:none; }
+.hero-vline {
+  position:absolute;width:1px;height:100%;
+  background:linear-gradient(to bottom,transparent,rgba(184,150,90,0.12),transparent);
+  animation:vpulse 5s ease-in-out infinite;
+}
+.hero-vline:nth-child(1){left:33%;animation-delay:0s}
+.hero-vline:nth-child(2){left:66%;animation-delay:2.5s}
+@keyframes vpulse { 0%,100%{opacity:.3} 50%{opacity:.9} }
+.hero-content { position:relative;z-index:1;max-width:900px;width:100%; }
+.hero-eyebrow {
+  font-size:0.6rem;letter-spacing:0.5em;text-transform:uppercase;color:var(--gold);
+  display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem;
+  opacity:0;animation:fadeUp 1s var(--expo) 0.4s forwards;
+}
+.hero-eyebrow::before { content:'';width:32px;height:1px;background:var(--gold); }
+.hero-h1 {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(3.5rem,13vw,9rem);font-weight:300;line-height:0.92;
+  letter-spacing:-0.025em;margin-bottom:1.5rem;overflow:hidden;
+}
+.hero-h1 span {
+  display:block;overflow:hidden;
+  opacity:0;transform:translateY(100%);animation:lineUp 1.1s var(--expo) forwards;
+}
+.hero-h1 span:nth-child(1){animation-delay:0.5s}
+.hero-h1 span:nth-child(2){animation-delay:0.7s;font-style:italic;color:var(--gold-light)}
+.hero-h1 span:nth-child(3){animation-delay:0.9s}
+@keyframes lineUp { to{opacity:1;transform:translateY(0)} }
+.hero-sub {
+  font-size:clamp(0.8rem,2vw,1rem);color:var(--warm-gray);font-weight:300;
+  margin-bottom:2.5rem;max-width:420px;
+  opacity:0;animation:fadeUp 1s var(--expo) 1.1s forwards;
+}
+.hero-cta { display:flex;flex-wrap:wrap;gap:1rem;opacity:0;animation:fadeUp 1s var(--expo) 1.3s forwards; }
+.hero-scroll {
+  position:absolute;bottom:clamp(1.5rem,4vw,2.5rem);right:clamp(1.2rem,5vw,4rem);
+  display:flex;flex-direction:column;align-items:center;gap:0.4rem;
+  z-index:1;opacity:0;animation:fadeUp 1s var(--expo) 2s forwards;
+}
+.hero-scroll span { font-size:0.55rem;letter-spacing:0.4em;text-transform:uppercase;color:var(--dim);writing-mode:vertical-lr; }
+.scroll-line { width:1px;height:50px;background:linear-gradient(to bottom,var(--gold),transparent);animation:spulse 2s ease-in-out infinite; }
+@keyframes spulse { 0%,100%{opacity:.3} 50%{opacity:1} }
+
+/* MARQUEE */
+.marquee { background:var(--gold);padding:0.9rem 0;overflow:hidden; }
+.marquee-track { display:flex;gap:2.5rem;white-space:nowrap;animation:marq 22s linear infinite; }
+.marquee-text { font-size:0.6rem;letter-spacing:0.4em;text-transform:uppercase;color:var(--black);font-weight:600; }
+@keyframes marq { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+/* SERVICES */
+.services-grid {
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr));
+  gap:1px;background:rgba(184,150,90,0.1);margin-top:3rem;
+}
+.service-card {
+  background:var(--surface-2);padding:2.2rem 2rem;cursor:pointer;position:relative;overflow:hidden;transition:background 0.4s;
+}
+.service-card::before { content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(184,150,90,0.07),transparent);opacity:0;transition:opacity 0.4s; }
+.service-card:hover { background:var(--surface-3); }
+.service-card:hover::before { opacity:1; }
+.service-icon { font-size:1.8rem;margin-bottom:1.2rem;display:block; }
+.service-name { font-family:'Cormorant Garamond',serif;font-size:1.4rem;margin-bottom:0.5rem; }
+.service-desc { font-size:0.75rem;color:var(--dim);line-height:1.8;margin-bottom:1.2rem; }
+.service-price { font-family:'Cormorant Garamond',serif;font-size:1.7rem;color:var(--gold); }
+.service-dur   { font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--dim); }
+.service-cta {
+  font-size:0.6rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);
+  background:none;border:none;cursor:pointer;margin-top:1.2rem;
+  opacity:0;transform:translateY(6px);transition:all 0.3s var(--expo);
+  display:flex;align-items:center;gap:0.4rem;
+}
+.service-cta::after { content:'→';transition:transform 0.3s; }
+.service-card:hover .service-cta { opacity:1;transform:translateY(0); }
+.service-card:hover .service-cta::after { transform:translateX(4px); }
+
+/* PHOTO SECTIONS */
+.img-wrap { position:relative;overflow:hidden; }
+.img-wrap img { width:100%;height:100%;object-fit:cover;transition:transform 0.8s var(--expo);display:block; }
+.img-wrap:hover img { transform:scale(1.04); }
+.img-border { border:1px solid rgba(184,150,90,0.2); }
+.img-quote { position:absolute;bottom:-1.5rem;right:-1.5rem;background:var(--gold);padding:1.2rem 1.5rem;max-width:180px;z-index:2; }
+.img-quote p { font-family:'Cormorant Garamond',serif;font-size:0.95rem;font-style:italic;color:var(--black);line-height:1.4; }
+
+/* STATS */
+.stats { display:flex;flex-wrap:wrap;gap:2rem;margin-top:2.5rem; }
+.stat-num { font-family:'Cormorant Garamond',serif;font-size:3rem;color:var(--gold);display:block;line-height:1; }
+.stat-label { font-size:0.6rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--dim);display:block;margin-top:0.3rem; }
+
+/* PARALLAX */
+.parallax { position:relative;height:clamp(280px,50vw,520px);overflow:hidden; }
+.parallax-img { position:absolute;inset:-15%;width:100%;height:130%;object-fit:cover;filter:grayscale(0.2); }
+.parallax-overlay { position:absolute;inset:0;background:rgba(10,9,6,0.58);display:flex;align-items:center;justify-content:center;padding:2rem; }
+.parallax-quote { font-family:'Cormorant Garamond',serif;font-size:clamp(1.3rem,3.5vw,2.5rem);font-style:italic;font-weight:300;text-align:center;max-width:640px;line-height:1.5; }
+
+/* REVIEWS */
+.reviews-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:1.5rem;margin-top:3rem; }
+.review-card { background:var(--surface-2);padding:2rem;border-left:2px solid var(--gold-dark);transition:transform 0.4s var(--expo),border-color 0.3s; }
+.review-card:hover { transform:translateY(-5px);border-color:var(--gold); }
+.review-stars { color:var(--gold);font-size:0.75rem;margin-bottom:1rem;letter-spacing:0.15em; }
+.review-text { font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-style:italic;line-height:1.7;margin-bottom:1.5rem;color:var(--off-white); }
+.review-author { display:flex;align-items:center;gap:0.8rem; }
+.review-avatar { width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:600;color:var(--gold);flex-shrink:0; background:rgba(184,150,90,0.15);border:1px solid rgba(184,150,90,0.35); }
+.review-name { font-size:0.75rem;font-weight:600; }
+.review-role { font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--dim); }
+
+/* MAP */
+.location-grid { display:grid;grid-template-columns:1fr 1.8fr;gap:clamp(2rem,5vw,4rem);align-items:start;margin-top:3rem; }
+@media(max-width:768px) { .location-grid{grid-template-columns:1fr} }
+.loc-item { display:flex;gap:1rem;align-items:flex-start;margin-bottom:1.5rem; }
+.loc-icon { color:var(--gold);font-size:1.1rem;flex-shrink:0;margin-top:2px; }
+.loc-label { font-size:0.55rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--dim);margin-bottom:0.2rem; }
+.loc-val { font-size:0.85rem;line-height:1.6; }
+.map-frame { height:clamp(280px,45vw,440px);overflow:hidden;border:1px solid rgba(184,150,90,0.2); }
+.map-frame iframe { width:100%;height:100%;filter:grayscale(0.25) contrast(1.05); }
+.orari-table { width:100%;border-collapse:collapse;margin-top:1rem; }
+.orari-table td { padding:0.6rem 0;font-size:0.82rem;border-bottom:1px solid rgba(255,255,255,0.06); }
+.orari-table td:first-child { color:var(--dim);font-size:0.75rem;letter-spacing:0.08em; }
+.orari-table td:last-child { text-align:right;color:var(--off-white); }
+.orari-table tr.closed td { opacity:0.5; }
+.orari-table tr.closed td:last-child { color:#e55; }
+
+/* VALUES */
+.values-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr));gap:1px;background:rgba(184,150,90,0.1);margin-top:3rem; }
+.value-card { background:var(--surface-2);padding:2.5rem 2rem; }
+.value-num { font-family:'Cormorant Garamond',serif;font-size:3.5rem;color:rgba(184,150,90,0.18);line-height:1;margin-bottom:0.8rem; }
+.value-title { font-family:'Cormorant Garamond',serif;font-size:1.3rem;margin-bottom:0.6rem; }
+.value-text { font-size:0.75rem;color:var(--dim);line-height:1.9; }
+
+/* BOOKING */
+.booking-wrap { display:grid;grid-template-columns:1fr 1.2fr;gap:0;min-height:80vh; }
+@media(max-width:860px) { .booking-wrap{grid-template-columns:1fr} }
+.services-list-panel { padding:clamp(2rem,5vw,4rem);background:var(--surface);border-right:1px solid rgba(184,150,90,0.1); }
+.booking-form-panel  { padding:clamp(2rem,5vw,4rem);background:var(--surface-2); }
+.service-row {
+  padding:1.5rem 0;border-bottom:1px solid rgba(255,255,255,0.06);
+  display:flex;justify-content:space-between;align-items:flex-start;
+  cursor:pointer;position:relative;transition:all 0.3s;
+}
+.service-row::before { content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--gold);transform:scaleY(0);transition:transform 0.4s var(--expo); }
+.service-row:hover::before,.service-row.sel::before { transform:scaleY(1); }
+.service-row:hover .sr-name,.service-row.sel .sr-name { color:var(--gold-light); }
+.sr-name { font-family:'Cormorant Garamond',serif;font-size:1.25rem;transition:color 0.3s;margin-bottom:0.3rem; }
+.sr-desc { font-size:0.72rem;color:var(--dim);line-height:1.6; }
+.sr-dur  { font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-dark);margin-top:0.4rem; }
+.sr-price { font-family:'Cormorant Garamond',serif;font-size:1.8rem;color:var(--gold);flex-shrink:0;padding-left:1rem; }
+.sel-summary { background:rgba(184,150,90,0.08);border:1px solid rgba(184,150,90,0.2);padding:0.8rem 1.2rem;margin-bottom:2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem; }
+.step-label { font-size:0.58rem;letter-spacing:0.38em;text-transform:uppercase;color:var(--gold);margin-bottom:0.8rem;display:flex;align-items:center;gap:0.6rem; }
+.step-label span { display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border:1px solid var(--gold);font-size:0.65rem;flex-shrink:0; }
+.barbers { display:flex;gap:0.8rem;margin-bottom:2rem; }
+.barber-btn { flex:1;background:var(--surface-3);padding:1rem 0.8rem;text-align:center;border:1px solid transparent;cursor:pointer;transition:all 0.3s;-webkit-tap-highlight-color:transparent; }
+.barber-btn:hover,.barber-btn.sel { border-color:var(--gold);background:rgba(184,150,90,0.1); }
+.barber-avatar { width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:700;margin:0 auto 0.6rem; }
+.barber-btn-name { font-size:0.75rem;font-weight:500; }
+.barber-btn-role { font-size:0.55rem;color:var(--dim);letter-spacing:0.1em; }
+.calendar { background:var(--surface-3);padding:1.2rem;margin-bottom:2rem; }
+.cal-header { display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem; }
+.cal-month  { font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-style:italic; }
+.cal-nav { background:none;border:1px solid rgba(184,150,90,0.3);color:var(--gold);width:28px;height:28px;cursor:pointer;font-size:0.85rem;transition:all 0.3s;-webkit-tap-highlight-color:transparent; }
+.cal-nav:hover { background:var(--gold);color:var(--black); }
+.cal-days-hdr { display:grid;grid-template-columns:repeat(7,1fr);text-align:center;margin-bottom:0.4rem; }
+.cal-days-hdr span { font-size:0.5rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--dim);padding:0.4rem 0; }
+.cal-grid { display:grid;grid-template-columns:repeat(7,1fr);gap:2px; }
+.cal-day { aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:0.8rem;cursor:pointer;background:rgba(184,150,90,0.18);border:1px solid rgba(184,150,90,0.5);color:#fff;transition:all 0.2s;border-radius:3px;-webkit-tap-highlight-color:transparent;font-weight:600; }
+.cal-day:hover:not(.dis):not(.empty) { background:rgba(184,150,90,0.45);color:var(--gold);border-color:var(--gold);transform:scale(1.1); }
+.cal-day.sel   { background:var(--gold);color:var(--black);font-weight:700;border-color:var(--gold-light); }
+.cal-day.dis   { color:rgba(255,255,255,0.2);cursor:not-allowed;background:none;border-color:rgba(255,255,255,0.06);font-weight:300; }
+.cal-day.empty { background:none;border-color:transparent;cursor:default; }
+.cal-day.today { border:2px solid var(--gold);color:var(--gold);background:rgba(184,150,90,0.25); }
+.time-grid { display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:2rem; }
+@media(min-width:600px) { .time-grid{grid-template-columns:repeat(5,1fr)} }
+.time-btn { padding:0.55rem;text-align:center;font-size:0.65rem;background:var(--surface-3);border:1px solid transparent;cursor:pointer;color:var(--off-white);transition:all 0.2s;-webkit-tap-highlight-color:transparent; }
+.time-btn:hover:not(.booked) { border-color:var(--gold);color:var(--gold); }
+.time-btn.sel    { background:var(--gold);color:var(--black);font-weight:600; }
+.time-btn.booked { opacity:0.25;cursor:not-allowed;text-decoration:line-through;pointer-events:none; }
+/* Loading state for times */
+.time-btn.loading { animation:pulse 1s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:.3} 50%{opacity:.7} }
+.form-inp { width:100%;background:var(--surface-3);border:1px solid rgba(184,150,90,0.15);padding:0.8rem 0.9rem;font-family:'Outfit',sans-serif;font-size:0.8rem;color:var(--off-white);transition:border-color 0.3s;margin-bottom:0.8rem;-webkit-appearance:none;border-radius:0; }
+.form-inp:focus { outline:none;border-color:var(--gold); }
+.form-inp::placeholder { color:var(--dim); }
+.form-row { display:grid;grid-template-columns:1fr 1fr;gap:0.8rem; }
+@media(max-width:500px) { .form-row{grid-template-columns:1fr} }
+
+/* MODAL */
+.modal-bg { position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.86);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.4s;padding:1rem; }
+.modal-bg.open { opacity:1;pointer-events:all; }
+.modal-box { background:var(--surface-2);border:1px solid rgba(184,150,90,0.28);padding:clamp(1.5rem,5vw,2.5rem);max-width:500px;width:100%;position:relative;transform:translateY(24px);transition:transform 0.4s var(--expo);max-height:90vh;overflow-y:auto; }
+.modal-bg.open .modal-box { transform:translateY(0); }
+.modal-close { position:absolute;top:1rem;right:1.2rem;background:none;border:none;color:var(--dim);font-size:1.8rem;cursor:pointer;line-height:1; }
+.modal-close:hover { color:var(--gold); }
+.bsum-row { display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:0.78rem; }
+.bsum-row:last-child { border-bottom:none; }
+.bsum-label { color:var(--dim); }
+
+/* TOAST */
+.toast { position:fixed;bottom:1.5rem;right:1.5rem;z-index:3000;background:var(--surface-2);border:1px solid var(--gold);padding:0.9rem 1.3rem;max-width:300px;min-width:220px;transform:translateY(80px);opacity:0;transition:all 0.5s var(--expo);display:flex;align-items:center;gap:0.7rem;pointer-events:none; }
+.toast.show { transform:translateY(0);opacity:1; }
+.toast-text { font-size:0.75rem;line-height:1.5; }
+
+/* FOOTER */
+footer { background:var(--surface);border-top:1px solid rgba(184,150,90,0.12);padding:clamp(3rem,8vw,5rem) clamp(1.2rem,5vw,4rem) clamp(1.5rem,4vw,2rem); }
+.footer-grid { display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:clamp(2rem,5vw,4rem);margin-bottom:3rem; }
+@media(max-width:860px) { .footer-grid{grid-template-columns:1fr 1fr;gap:2rem} }
+@media(max-width:480px) { .footer-grid{grid-template-columns:1fr;gap:2rem} }
+.footer-logo { font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--off-white);margin-bottom:1rem; }
+.footer-heading { font-size:0.55rem;letter-spacing:0.42em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem; }
+.footer-links { display:flex;flex-direction:column;gap:0.7rem; }
+.flink { font-size:0.78rem;color:var(--warm-gray);text-decoration:none;background:none;border:none;cursor:pointer;text-align:left;transition:color 0.3s;font-family:'Outfit',sans-serif;padding:0;-webkit-tap-highlight-color:transparent; }
+.flink:hover { color:var(--gold); }
+.footer-bottom { border-top:1px solid rgba(255,255,255,0.06);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem; }
+.footer-copy { font-size:0.65rem;color:var(--dim);letter-spacing:0.08em; }
+.social-links { display:flex;gap:1.5rem; }
+.social-link { font-size:0.6rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--dim);text-decoration:none;background:none;border:none;cursor:pointer;transition:color 0.3s;font-family:'Outfit',sans-serif;-webkit-tap-highlight-color:transparent; }
+.social-link:hover { color:var(--gold); }
+
+.cta-banner { background:var(--gold);padding:clamp(3rem,8vw,5rem) clamp(1.2rem,5vw,4rem);text-align:center; }
+.cta-banner h2 { font-family:'Cormorant Garamond',serif;color:var(--black);font-weight:300;margin-bottom:1.2rem;font-size:clamp(1.8rem,4.5vw,3.5rem); }
+.cta-banner p { color:rgba(0,0,0,0.55);font-size:0.82rem;margin-bottom:1.8rem;letter-spacing:0.08em; }
+
+/* REAL-TIME INDICATOR */
+.rt-dot { display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:6px;animation:rtpulse 2s ease-in-out infinite; }
+@keyframes rtpulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
+.times-loading { text-align:center;padding:1.5rem;font-size:0.75rem;color:var(--dim);letter-spacing:0.2em;text-transform:uppercase; }
+
+/* ============================================================
+   MOBILE FIXES — telefono (max 480px) e tablet piccolo (max 768px)
+   ============================================================ */
+
+/* Nav */
+@media(max-width:860px) {
+  .nav { padding:1rem 1.2rem; }
+  .nav-logo { font-size:1rem; letter-spacing:.08em; }
+}
+
+/* Hero */
+@media(max-width:480px) {
+  .hero {
+    min-height:100svh;
+    padding:0 1.2rem 4rem;
+    align-items:flex-end;
+  }
+  .hero-h1 { font-size:clamp(2.8rem,14vw,4.5rem); margin-bottom:1rem; }
+  .hero-sub { font-size:.82rem; margin-bottom:1.5rem; max-width:100%; }
+  .hero-cta { flex-direction:column; gap:.7rem; }
+  .hero-cta .btn { width:100%; justify-content:center; padding:.85rem 1.2rem; }
+  .hero-scroll { display:none; }
+  .hero-eyebrow { font-size:.52rem; }
+}
+
+/* Sezioni generali */
+@media(max-width:480px) {
+  section { padding:2.5rem 1.2rem; }
+  .label { font-size:.52rem; }
+  h2, .h2 { font-size:clamp(1.8rem,8vw,2.8rem); }
+}
+
+/* Grid 2 colonne → 1 su mobile */
+@media(max-width:640px) {
+  .grid-2 { grid-template-columns:1fr; gap:2rem; }
+}
+
+/* Img quote (esce fuori su mobile) */
+@media(max-width:480px) {
+  .img-quote {
+    position:relative;
+    bottom:auto; right:auto;
+    margin-top:1rem;
+    max-width:100%;
+    display:inline-block;
+  }
+}
+
+/* Servizi card */
+@media(max-width:480px) {
+  .services-grid { grid-template-columns:1fr; }
+  .service-card { padding:1.8rem 1.4rem; }
+}
+
+/* Stats */
+@media(max-width:480px) {
+  .stats { gap:1.5rem; }
+  .stat-num { font-size:2.4rem; }
+}
+
+/* Reviews */
+@media(max-width:480px) {
+  .reviews-grid { grid-template-columns:1fr; gap:1rem; }
+  .review-card { padding:1.5rem; }
+}
+
+/* Location / mappa */
+@media(max-width:768px) {
+  .location-grid { grid-template-columns:1fr; gap:2rem; }
+  .map-frame { height:280px; }
+}
+
+/* CTA banner */
+@media(max-width:480px) {
+  .cta-banner { padding:2.5rem 1.2rem; }
+  .cta-banner h2 { font-size:clamp(1.5rem,7vw,2.2rem); }
+  .cta-banner .btn { width:100%; justify-content:center; }
+}
+
+/* Footer */
+@media(max-width:860px) {
+  .footer-grid { grid-template-columns:1fr 1fr; gap:2rem; }
+}
+@media(max-width:480px) {
+  .footer-grid { grid-template-columns:1fr; gap:1.8rem; }
+  footer { padding:2.5rem 1.2rem 1.5rem; }
+  .footer-bottom { flex-direction:column; align-items:flex-start; gap:.6rem; }
+}
+
+/* Pagine interne hero */
+@media(max-width:480px) {
+  .pagehero-h1 { font-size:clamp(2.5rem,11vw,4rem) !important; }
+}
+
+/* BOOKING — pagina servizi */
+@media(max-width:860px) {
+  .booking-wrap { grid-template-columns:1fr; }
+  .services-list-panel { border-right:none; border-bottom:1px solid rgba(184,150,90,.1); padding:1.8rem 1.2rem; }
+  .booking-form-panel { padding:1.8rem 1.2rem; }
+}
+@media(max-width:480px) {
+  .services-list-panel { padding:1.5rem 1.2rem; }
+  .booking-form-panel  { padding:1.5rem 1.2rem; }
+  /* Servizio row: prezzo sotto invece che a destra */
+  .service-row { flex-wrap:wrap; gap:.5rem; }
+  .sr-price { padding-left:0; font-size:1.5rem; }
+  .sr-name  { font-size:1.1rem; }
+  /* Barber buttons */
+  .barbers { gap:.6rem; }
+  .barber-btn { padding:.85rem .6rem; }
+  /* Calendario */
+  .cal-day { font-size:.65rem; }
+  .cal-days-hdr span { font-size:.45rem; padding:.3rem 0; }
+  /* Orari: 4 colonne su mobile vanno bene, ma più piccoli */
+  .time-btn { padding:.45rem .3rem; font-size:.6rem; }
+  /* Form */
+  .form-row { grid-template-columns:1fr; }
+  /* Submit button */
+  #submitBtn { padding:1rem; font-size:.68rem; }
+  /* Selected summary */
+  .sel-summary { flex-direction:column; align-items:flex-start; gap:.3rem; }
+}
+
+/* Overlay menu */
+@media(max-width:480px) {
+  .overlay-link { font-size:clamp(1.8rem,10vw,3rem) !important; }
+  .overlay-info { font-size:.58rem; padding:0 1.5rem; }
+}
+
+/* Modal */
+@media(max-width:480px) {
+  .modal-box { padding:1.5rem 1.2rem; border-radius:0; }
+  .modal-bg  { padding:.5rem; align-items:flex-end; }
+  .modal-box { max-height:95svh; border-radius:0; }
+}
+
+/* Toast */
+@media(max-width:480px) {
+  .toast { left:1rem; right:1rem; max-width:100%; bottom:1rem; }
+}
+
+/* Values grid */
+@media(max-width:480px) {
+  .values-grid { grid-template-columns:1fr; }
+  .value-card  { padding:2rem 1.5rem; }
+  .value-num   { font-size:2.8rem; }
+}
+
+/* Prevent horizontal overflow */
+@media(max-width:480px) {
+  body { overflow-x:hidden; }
+  * { max-width:100%; }
+  img { max-width:100%; height:auto; }
+  iframe { max-width:100%; }
+  .hero-vlines { display:none; }
+}
+
+/* Touch tap targets minimo 44px */
+@media(max-width:860px) {
+  .btn, .cal-day, .time-btn, .service-row,
+  .barber-btn, .hamburger, .cal-nav, .flink { min-height:44px; }
+  .cal-day { min-height:36px; }
+  .time-btn { min-height:40px; }
+}
+
+/* Prevent text too small */
+@media(max-width:480px) {
+  .service-desc, .sr-desc, .review-text,
+  .loc-val, .footer-copy { font-size:.82rem !important; }
+  .sr-dur, .service-dur, .bsum-label,
+  .review-role, .stat-label { font-size:.62rem !important; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ================================================================
+     DEMO PERSONALIZZAZIONE — parametri URL
+     Uso: ?nome=Gentlemen+Barber&indirizzo=Via+Roma+1&tel=3201234567&titolare=Luca&collaboratore=Marco
+================================================================ -->
+<script>
+(function() {
+  var p = new URLSearchParams(window.location.search);
+  var NOME         = p.get('nome')         || 'Torregrossa barber';
+  var INDIRIZZO    = p.get('indirizzo')    || 'Piazza Natale Tommaso 6';
+  var CAP_CITTA    = p.get('citta')        || '90147 Palermo (PA)';
+  var TEL_RAW      = p.get('tel')          || '328 096 2635';
+  var TEL_DISPLAY  = '+39 ' + TEL_RAW;
+  var TEL_HREF     = '+39' + TEL_RAW.replace(/\s/g,'');
+  var TITOLARE     = p.get('titolare')     || 'Giovanni';
+  var COLLAB       = p.get('collaboratore')|| 'Marco';
+  var QUARTIERE    = p.get('quartiere')    || 'Tommaso Natale';
+  var MAPS_LINK    = p.get('maps')         || null;
+
+  // Sostituisce tutto il testo visibile dopo che il DOM è pronto
+  function replaceAll() {
+    var body = document.body.innerHTML;
+
+    // Nome barberia
+    body = body.replace(/Torregrossa barber/g, NOME);
+
+    // Indirizzo — tutte le varianti
+    body = body.replace(/Piazza Natale Tommaso 6/g, INDIRIZZO);
+    body = body.replace(/Piazza Natale Tommaso(?!\s*[0-9])/g, INDIRIZZO);
+
+    // CAP + città
+    body = body.replace(/90147 Palermo \(PA\)/g, CAP_CITTA);
+    body = body.replace(/90147 Palermo/g, CAP_CITTA.replace(' (PA)',''));
+
+    // Quartiere e città in testi descrittivi
+    body = body.replace(/quartiere Tommaso Natale di Palermo/g, QUARTIERE ? 'quartiere ' + QUARTIERE : 'quartiere ' + CAP_CITTA.split(' ').slice(-1)[0]);
+    body = body.replace(/nel quartiere Tommaso Natale di Palermo/g, QUARTIERE ? 'nel quartiere ' + QUARTIERE : 'a ' + CAP_CITTA.split(' ').slice(-1)[0]);
+    body = body.replace(/nel quartiere Tommaso Natale di Palermo/g, 'nel quartiere ' + QUARTIERE);
+    body = body.replace(/nel quartiere Tommaso Natale/g, 'nel quartiere ' + QUARTIERE);
+    body = body.replace(/Tommaso Natale di Palermo/g, QUARTIERE);
+    body = body.replace(/Tommaso Natale/g, QUARTIERE);
+
+    // "Palermo" standalone nei testi (non nei link Google Maps)
+    body = body.replace(/barbiere di riferimento nel quartiere [^\<]*/g, 'barbiere di riferimento nel quartiere ' + QUARTIERE);
+    body = body.replace(/Il barbiere di fiducia nel quartiere [^\<]*/g, 'Il barbiere di fiducia nel quartiere ' + QUARTIERE + '.');
+    body = body.replace(/grooming maschile nel quartiere [^,]*, in [^\<.]*/g, 'grooming maschile nel quartiere ' + QUARTIERE + ', in ' + INDIRIZZO + '.');
+
+    // Hero eyebrow "Palermo · Piazza Natale Tommaso"
+    body = body.replace(/Palermo · Piazza Natale Tommaso/g, CAP_CITTA.split(' ').slice(-1)[0] + ' · ' + INDIRIZZO);
+
+    // Loader subtitle "Torregrossa barber · Palermo"
+    body = body.replace(/· Palermo<\/div>/g, '· ' + CAP_CITTA.split(' ').slice(-1)[0] + '</div>');
+
+    // Overlay menu info line
+    body = body.replace(/Piazza Natale Tommaso 6 · Palermo/g, INDIRIZZO + ' · ' + CAP_CITTA.split(' ').slice(-1)[0]);
+
+    // Google Calendar link location
+    body = body.replace(/Piazza Natale Tommaso 6, Palermo/g, INDIRIZZO + ', ' + CAP_CITTA.split(' ').slice(-1)[0]);
+
+    // Ottimo barbiere su Palermo nelle recensioni — lasciamo stare, è una citazione reale
+
+    // Telefono nei testi e negli href
+    body = body.replace(/\+39 328 096 2635/g, TEL_DISPLAY);
+    body = body.replace(/\+393280962635/g, TEL_HREF.replace('+','').replace(/\s/g,''));
+    body = body.replace(/328 096 2635/g, TEL_RAW);
+    body = body.replace(/href="tel:\+393280962635"/g, 'href="tel:' + TEL_HREF + '"');
+
+    // Titolare e collaboratore
+    body = body.replace(/\bGiovanni\b/g, TITOLARE);
+    body = body.replace(/\bMarco\b/g, COLLAB);
+
+    // Iniziali avatar (prende prima lettera)
+    var initT = TITOLARE.charAt(0).toUpperCase();
+    var initC = COLLAB.charAt(0).toUpperCase();
+    body = body.replace(/>G<\/div>\s*<div class="barber-btn-name">/, '>' + initT + '</div><div class="barber-btn-name">');
+    body = body.replace(/>M<\/div>\s*<div class="barber-btn-name">/, '>' + initC + '</div><div class="barber-btn-name">');
+
+    document.body.innerHTML = body;
+
+    // Aggiorna Google Maps
+    var mapsFrame = document.getElementById('mapsFrame');
+    if(mapsFrame) {
+      if(MAPS_LINK) {
+        // Usa il link diretto Google Maps della barberia
+        // Converte il link condivisibile in embed
+        var embedSrc = 'https://maps.google.com/maps?q=' + encodeURIComponent(INDIRIZZO + ' ' + CAP_CITTA) + '&output=embed&hl=it&z=17';
+        // Se è un link goo.gl o maps.app.goo.gl, usiamo place embed
+        if(MAPS_LINK.includes('goo.gl') || MAPS_LINK.includes('maps.app') || MAPS_LINK.includes('maps.google')) {
+          // Estrai coordinate se presenti, altrimenti cerca per nome+indirizzo
+          var coordMatch = MAPS_LINK.match(/@(-?[0-9]+\.[0-9]+),(-?[0-9]+\.[0-9]+)/);
+          if(coordMatch) {
+            embedSrc = 'https://maps.google.com/maps?q=' + coordMatch[1] + ',' + coordMatch[2] + '&output=embed&hl=it&z=17';
+          } else {
+            embedSrc = 'https://maps.google.com/maps?q=' + encodeURIComponent(NOME + ' ' + INDIRIZZO + ' ' + CAP_CITTA) + '&output=embed&hl=it&z=17';
+          }
+        }
+        mapsFrame.src = embedSrc;
+      } else {
+        var citta = CAP_CITTA.replace(/[0-9]+\s*/,'').replace(/\(.*\)/,'').trim();
+        var q = encodeURIComponent(NOME + ' ' + INDIRIZZO + ' ' + citta);
+        mapsFrame.src = 'https://maps.google.com/maps?q=' + q + '&output=embed&hl=it&z=17';
+      }
+    }
+
+    // Aggiorna anche title e meta
+    document.title = NOME + ' — ' + CAP_CITTA.split(' ').slice(-1)[0];
+
+    // Aggiorna gli onclick di selBarber che ora hanno il vecchio nome
+    // (già nel testo — non serve altro)
+
+    // Banner DEMO in alto
+    var banner = document.createElement('div');
+    banner.style.cssText = 'position:relative;top:0;left:0;right:0;background:#b8965a;color:#0a0906;text-align:center;font-size:0.65rem;letter-spacing:0.25em;text-transform:uppercase;padding:0.5rem 1rem;z-index:100;font-family:Outfit,sans-serif;font-weight:600;display:block;';
+    banner.textContent = '✦ DEMO PERSONALIZZATA PER ' + NOME.toUpperCase() + ' — Questo sito potrebbe essere tuo ✦';
+    document.body.prepend(banner);
+
+    // Sposta loader sotto il banner
+    var loader = document.getElementById('loader');
+    if(loader) loader.style.top = '28px';
+  }
+
+  if(document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', replaceAll);
+  } else {
+    replaceAll();
+  }
+})();
+</script>
+
+
+<!-- Loader failsafe — completamente indipendente -->
+<script>
+setTimeout(function(){
+  try {
+    // Emergency fallback: se il main script non ha ancora chiamato dismissLoader
+    if(typeof dismissLoader === 'function') {
+      dismissLoader(); // ha il flag interno, non causa doppie chiamate
+    } else {
+      // Main script non caricato — chiudi loader manualmente
+      var l = document.getElementById('loader');
+      if(l && !l.classList.contains('out')) { l.classList.add('out'); }
+      // Assicurati che la home sia visibile
+      if(!document.querySelector('.page.active')){
+        var h = document.getElementById('page-home');
+        if(h) h.classList.add('active');
+      }
+      // Forza visibilità reveal
+      var s = document.createElement('style');
+      s.textContent = '.reveal,.reveal-l,.reveal-r{opacity:1!important;transform:none!important;}';
+      document.head.appendChild(s);
+    }
+  } catch(e){}
+}, 5000);
+</script>
+
+<!-- Critical UI functions — loaded immediately before images parse -->
+<script>
+(function() {
+  var menuOpen = false;
+  // Make toggleMenu work instantly, even before main script loads
+  window.toggleMenu = function() {
+    menuOpen = !menuOpen;
+    var btn     = document.getElementById('hamburger');
+    var overlay = document.getElementById('overlay');
+    if(btn)     btn.classList.toggle('open', menuOpen);
+    if(overlay) overlay.classList.toggle('open', menuOpen);
+    document.body.style.overflow = menuOpen ? 'hidden' : '';
+  };
+  // Stub nav so overlay links work before main script loads
+  // Will be overridden by the full nav() function later
+  window.nav = function(page) {
+    menuOpen = false;
+    var btn     = document.getElementById('hamburger');
+    var overlay = document.getElementById('overlay');
+    if(btn)     btn.classList.remove('open');
+    if(overlay) overlay.classList.remove('open');
+    document.body.style.overflow = '';
+    document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+    var t = document.getElementById('page-'+page);
+    if(t) { t.classList.add('active'); window.scrollTo({top:0,behavior:'smooth'}); }
+    // Dismiss loader immediately on any navigation
+    var loader = document.getElementById('loader');
+    if(loader) {
+      loader.classList.add('out');
+      setTimeout(function(){ loader.style.visibility = 'hidden'; }, 2200);
+    }
+  };
+})();
+</script>
+
+
+<!-- LOADER -->
+<div id="loader">
+  <!-- Tendine split — sfondo scuro -->
+  <div class="ldr-curtain ldr-curtain-t"></div>
+  <div class="ldr-curtain ldr-curtain-b"></div>
+  <!-- Effetti ambientali -->
+  <div class="ldr-vignette"></div>
+  <div class="ldr-particles">
+    <div class="ldr-p" style="--pd:5s;--pd2:0s;width:2px;height:2px;left:11%;top:32%"></div>
+    <div class="ldr-p" style="--pd:4s;--pd2:0.7s;width:1px;height:1px;left:27%;top:64%"></div>
+    <div class="ldr-p" style="--pd:6s;--pd2:0.3s;width:2px;height:2px;left:54%;top:26%"></div>
+    <div class="ldr-p" style="--pd:4.5s;--pd2:1.1s;width:1px;height:1px;left:73%;top:57%"></div>
+    <div class="ldr-p" style="--pd:5.5s;--pd2:0.5s;width:2px;height:2px;left:87%;top:38%"></div>
+    <div class="ldr-p" style="--pd:3.8s;--pd2:1.6s;width:1px;height:1px;left:41%;top:76%"></div>
+    <div class="ldr-p" style="--pd:5.2s;--pd2:0.9s;width:2px;height:2px;left:64%;top:17%"></div>
+  </div>
+  <!-- Angoli decorativi -->
+  <div class="ldr-corner tl"></div>
+  <div class="ldr-corner tr"></div>
+  <div class="ldr-corner bl"></div>
+  <div class="ldr-corner br"></div>
+  <!-- Contenuto centrale -->
+  <div class="ldr-content">
+    <div class="ldr-hline"></div>
+    <div class="ldr-icon">
+      <!-- Forbici — stroke-draw sequenziale -->
+      <svg class="ldr-icon-glow" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path class="draw" d="M10 8 L30 30" stroke="#b8965a" stroke-width="1.6" stroke-linecap="round"/>
+        <path class="draw" d="M10 52 L30 30" stroke="#b8965a" stroke-width="1.6" stroke-linecap="round"/>
+        <path class="draw" d="M30 30 Q40 20 48 16 Q56 12 56 22 Q56 29 46 30 Q40 31 32 28" stroke="#b8965a" stroke-width="1.3" stroke-linecap="round"/>
+        <path class="draw" d="M30 30 Q40 40 48 44 Q56 48 56 38 Q56 31 46 30" stroke="#b8965a" stroke-width="1.3" stroke-linecap="round"/>
+        <circle class="draw" cx="30" cy="30" r="2.8" stroke="#b8965a" stroke-width="1.2"/>
+      </svg>
+    </div>
+    <div class="ldr-name">Torregrossa barber</div>
+    <div class="ldr-divider">
+      <div class="ldr-divider-line"></div>
+      <div class="ldr-divider-star">✦</div>
+      <div class="ldr-divider-line r"></div>
+    </div>
+    <div class="ldr-sub">Torregrossa barber &nbsp;·&nbsp; Palermo</div>
+    <div class="ldr-progress">
+      <div class="ldr-progress-bg"></div>
+      <div class="ldr-progress-fill" id="ldrFill"></div>
+      <div class="ldr-progress-dot" id="ldrDot"></div>
+    </div>
+    <div class="ldr-pct" id="ldrPct">0%</div>
+    <div class="ldr-hline-b"></div>
+  </div>
+</div>
+
+<!-- OVERLAY MENU -->
+<div class="overlay" id="overlay">
+  <button class="overlay-link" onclick="nav('home')">Home</button>
+  <button class="overlay-link" onclick="nav('servizi')">Servizi &amp; Prenotazioni</button>
+  <button class="overlay-link" onclick="nav('chi-siamo')">Chi Siamo</button>
+  <button class="overlay-link" onclick="nav('recensioni')">Recensioni</button>
+  <div class="overlay-info">
+    Piazza Natale Tommaso 6 · Palermo · +39 328 096 2635<br>
+    Mar–Gio: 08:30–13:00 / 15:30–19:30 · Ven–Sab: 08:30–19:30
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav" id="mainNav">
+  <a class="nav-logo" href="#" onclick="nav('home');return false;">
+    <span class="star">✦</span>Torregrossa barber
+  </a>
+  <div class="nav-links hide-mobile">
+    <button class="nav-link active" onclick="nav('home')">Home</button>
+    <button class="nav-link" onclick="nav('servizi')">Servizi</button>
+    <button class="nav-link" onclick="nav('chi-siamo')">Chi Siamo</button>
+    <button class="nav-link" onclick="nav('recensioni')">Recensioni</button>
+  </div>
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span id="toastIcon">✉️</span><div class="toast-text" id="toastText"></div></div>
+
+<!-- CONFIRM MODAL -->
+<div class="modal-bg" id="confirmModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div style="font-size:2.5rem;margin-bottom:1rem;">✅</div>
+    <h2 class="serif" style="font-size:1.8rem;margin-bottom:0.8rem;">Prenotazione Confermata</h2>
+    <p style="font-size:0.8rem;color:var(--warm-gray);line-height:1.7;margin-bottom:1rem;">Riceverai una email di conferma. A presto da Giovanni!</p>
+    <div style="background:var(--surface-3);border-left:2px solid var(--gold);padding:1rem 1.2rem;margin-bottom:1.2rem;" id="bookingSummary"></div>
+    <p style="font-size:0.68rem;color:var(--dim);margin-bottom:1.2rem;">Pagamento in loco · Cancellazione gratuita entro 24h</p>
+    <a id="modalGcalBtn" href="#" target="_blank" class="btn btn-gold" style="width:100%;justify-content:center;margin-bottom:0.6rem;text-decoration:none;">📅 Aggiungi al calendario</a>
+    <button class="btn btn-o" style="width:100%;justify-content:center;margin-bottom:0.6rem;" onclick="closeModal()">Perfetto, grazie!</button>
+    <button style="width:100%;background:none;border:none;color:var(--dim);font-size:0.62rem;cursor:pointer;padding:0.4rem;font-family:'Outfit',sans-serif;text-decoration:underline;" onclick="cancelFromModal()">Annulla prenotazione</button>
+  </div>
+</div>
+
+<!-- CANCEL MODAL -->
+<div class="modal-bg" id="cancelModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="document.getElementById('cancelModal').classList.remove('open')">×</button>
+    <div id="cancelContent" style="text-align:center;">
+      <div style="font-size:2rem;margin-bottom:0.8rem;">⏳</div>
+      <p style="font-size:0.85rem;color:var(--dim);">Verifica in corso...</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     HOME PAGE
+     ============================================================ -->
+<div class="page active" id="page-home">
+
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <img class="hero-img" src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=1920&h=1080&auto=format&fit=crop&q=85" alt="Interno Torregrossa barber Palermo"/>
+    <div class="hero-overlay"></div>
+    <div class="hero-vlines"><div class="hero-vline"></div><div class="hero-vline"></div></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">Palermo · Piazza Natale Tommaso</div>
+      <h1 class="hero-h1">
+        <span>L'Arte</span><span>del Taglio</span><span>Perfetto</span>
+      </h1>
+      <p class="hero-sub" id="heroSub">Il barbiere di riferimento nel quartiere Tommaso Natale di Palermo</p>
+      <div class="hero-cta">
+        <button class="btn btn-gold" onclick="nav('servizi')">✦ Prenota Ora</button>
+        <button class="btn btn-outline" onclick="nav('chi-siamo')">Scopri di più</button>
+      </div>
+    </div>
+    <div class="hero-scroll"><div class="scroll-line"></div><span>Scroll</span></div>
+  </section>
+
+  <div class="marquee"><div class="marquee-track">
+    <span class="marquee-text">Taglio Classico</span><span style="color:rgba(0,0,0,0.3)">✦</span>
+    <span class="marquee-text">Rifinitura Barba</span><span style="color:rgba(0,0,0,0.3)">✦</span>
+    <span class="marquee-text">Rasatura Tradizionale</span><span style="color:rgba(0,0,0,0.3)">✦</span>
+    <span class="marquee-text">Skin Fade</span><span style="color:rgba(0,0,0,0.3)">✦</span>
+    <span class="marquee-text">Taglio Bambino</span><span style="color:rgba(0,0,0,0.3)">✦</span>
+    <span class="marquee-text">Colore Capelli</span><span style="color:rgba(0,0,0,0.3)">✦</span>
+    <span class="marquee-text">Taglio Classico</span><span style="color:rgba(0,0,0,0.3)">✦</span>
+    <span class="marquee-text">Rifinitura Barba</span><span style="color:rgba(0,0,0,0.3)">✦</span>
+    <span class="marquee-text">Rasatura Tradizionale</span><span style="color:rgba(0,0,0,0.3)">✦</span>
+    <span class="marquee-text">Skin Fade</span><span style="color:rgba(0,0,0,0.3)">✦</span>
+    <span class="marquee-text">Taglio Bambino</span><span style="color:rgba(0,0,0,0.3)">✦</span>
+    <span class="marquee-text">Colore Capelli</span><span style="color:rgba(0,0,0,0.3)">✦</span>
+  </div></div>
+
+  <section style="background:var(--black);">
+    <div class="container">
+      <div class="reveal"><div class="label">I Nostri Servizi</div>
+      <h2>L'Atelier della <span class="gold">Precisione</span></h2></div>
+      <div class="services-grid">
+        <div class="service-card reveal d1" onclick="navToService('Taglio + Shampoo','15','30 min')">
+          <span class="service-icon"> </span>
+          <div class="service-name">Taglio + Shampoo</div>
+          <div class="service-desc">Taglio personalizzato con shampoo e styling finale.</div>
+          <div class="service-price">15€</div><div class="service-dur">30 min</div>
+          <button class="service-cta" type="button">Prenota</button>
+        </div>
+        <div class="service-card reveal d2" onclick="navToService('Taglio + Barba','20','45 min')">
+          <span class="service-icon"></span>
+          <div class="service-name">Taglio + Barba</div>
+          <div class="service-desc">Il servizio completo: taglio, shampoo e rifinitura barba.</div>
+          <div class="service-price">20€</div><div class="service-dur">45 min</div>
+          <button class="service-cta" type="button">Prenota</button>
+        </div>
+        <div class="service-card reveal d3" onclick="navToService('Rasatura Tradizionale','25','40 min')">
+          <span class="service-icon"/span>
+          <div class="service-name">Rasatura Tradizionale</div>
+          <div class="service-desc">Rasoio a mano libera con impacchi caldi.</div>
+          <div class="service-price">25€</div><div class="service-dur">40 min</div>
+          <button class="service-cta" type="button">Prenota</button>
+        </div>
+        <div class="service-card reveal d4" onclick="navToService('Colore Capelli','40','90 min')">
+          <span class="service-icon">
+</span>
+          <div class="service-name">Colore Capelli</div>
+          <div class="service-desc">Consulenza cromatica e applicazione professionale.</div>
+          <div class="service-price">40€</div><div class="service-dur">90 min</div>
+          <button class="service-cta" type="button">Prenota</button>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:2.5rem;" class="reveal">
+        <button class="btn btn-outline" onclick="nav('servizi')">Vedi tutti i servizi →</button>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:var(--surface);">
+    <div class="container">
+      <div class="grid-2">
+        <div class="img-wrap img-border reveal-l" style="aspect-ratio:3/4;">
+          <img src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=800&h=1067&auto=format&fit=crop&q=85" alt="Interno Torregrossa barber Palermo"/>
+          <div class="img-quote"><p>"Un taglio preciso, ogni volta"</p></div>
+        </div>
+        <div class="reveal-r">
+          <div class="label">Il Salone</div>
+          <h2 style="margin-bottom:1.5rem;">Il Tuo Barbiere di <span class="gold">Fiducia</span></h2>
+          <p style="color:var(--warm-gray);line-height:1.9;font-size:0.88rem;margin-bottom:1rem;">
+            Torregrossa barber è il punto di riferimento per il grooming maschile nel quartiere Tommaso Natale di Palermo, in Piazza Natale Tommaso 6.
+          </p>
+          <p style="color:var(--warm-gray);line-height:1.9;font-size:0.88rem;margin-bottom:2rem;">
+            Con oltre 4.800 recensioni su Google e una valutazione di 4,8 stelle, la qualità parla da sola.
+          </p>
+          <div class="stats">
+            <div><span class="stat-num">4.8★</span><span class="stat-label">Su Google</span></div>
+            <div><span class="stat-num" data-count="4876">0</span><span class="stat-label">Recensioni</span></div>
+          </div>
+          <button class="btn btn-gold" style="margin-top:2rem;" onclick="nav('chi-siamo')">Scopri il Salone</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="parallax">
+    <img class="parallax-img" id="parallaxImg" src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=1920&h=900&auto=format&fit=crop&q=85" alt="Torregrossa barber"/>
+    <div class="parallax-overlay">
+      <p class="parallax-quote reveal">"Sfumatura a regola d'arte. Personale alla mano, gentilissimi e professionali."<br>
+      <span style="font-size:0.65rem;letter-spacing:0.3em;color:var(--gold);font-style:normal;"> — Umberto M., cliente Google</span></p>
+    </div>
+  </div>
+
+  <section style="background:var(--surface);">
+    <div class="container">
+      <div class="reveal"><div class="label">Google Reviews</div>
+      <h2>Cosa Dicono i <span class="gold">Clienti</span></h2></div>
+      <div class="reviews-grid">
+        <div class="review-card reveal d1">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Sfumatura a regola d'arte. Personale alla mano, gentilissimi e professionali. Già al primo taglio mi sono trovato più che bene."</p>
+          <div class="review-author">
+            <div class="review-avatar">UM</div>
+            <div><div class="review-name">Umberto M.</div><div class="review-role">Recensione Google · 5/5</div></div>
+          </div>
+        </div>
+        <div class="review-card reveal d2">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Sempre gentile e professionale. Sono cliente da più di 10 anni e mi trovo molto bene."</p>
+          <div class="review-author">
+            <div class="review-avatar">RG</div>
+            <div><div class="review-name">Roberto Genova</div><div class="review-role">Cliente da 10+ anni · 5/5</div></div>
+          </div>
+        </div>
+        <div class="review-card reveal d3">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Grandissima esperienza, capacità e professionalità. Da più di un anno ha un nuovo cliente: mio figlio, che con tutta tranquillità si fa tagliare da Giovanni."</p>
+          <div class="review-author">
+            <div class="review-avatar">DD</div>
+            <div><div class="review-name">Domenico Di Trapani</div><div class="review-role">Recensione Google · 5/5</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:var(--black);">
+    <div class="container">
+      <div class="reveal"><div class="label">Dove Siamo</div>
+      <h2>Vieni a <span class="gold">Trovarci</span></h2></div>
+      <div class="location-grid">
+        <div>
+          <div class="loc-item reveal d1"><span class="loc-icon">📍</span><div><div class="loc-label">Indirizzo</div><div class="loc-val">Piazza Natale Tommaso 6<br>90147 Palermo (PA)</div></div></div>
+          <div class="loc-item reveal d2"><span class="loc-icon">📞</span><div><div class="loc-label">Telefono</div><div class="loc-val"><a href="tel:+393280962635" style="color:inherit;text-decoration:none;">+39 328 096 2635</a></div></div></div>
+          <div class="loc-item reveal d3"><span class="loc-icon">🕐</span><div><div class="loc-label">Orari</div>
+            <table class="orari-table">
+              <tr><td>Mar · Mer · Gio</td><td>08:30–13:00 / 15:30–19:30</td></tr>
+              <tr><td>Venerdì · Sabato</td><td>08:30–19:30</td></tr>
+              <tr class="closed"><td>Domenica</td><td>Chiuso</td></tr>
+              <tr class="closed"><td>Lunedì</td><td>Chiuso</td></tr>
+            </table>
+          </div></div>
+        </div>
+        <div class="map-frame reveal-r">
+          <iframe id="mapsFrame" src="https://maps.google.com/maps?q=Piazza+Natale+Tommaso+6+Palermo&output=embed&hl=it&z=17" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" style="border:0;"></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="cta-banner"><div class="reveal">
+    <h2>Pronto per un Nuovo Look?</h2>
+    <p>Prenota il tuo appuntamento oggi stesso</p>
+    <button class="btn btn-black" onclick="nav('servizi')">Prenota Ora ✦</button>
+  </div></div>
+
+  <footer><div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo">Torregrossa barber<br><span style="font-size:0.8rem;color:var(--dim);font-style:italic;">Torregrossa barber</span></div>
+        <p style="font-size:0.78rem;color:var(--dim);line-height:1.8;">Il barbiere di fiducia nel quartiere Tommaso Natale di Palermo.</p>
+      </div>
+      <div><div class="footer-heading">Pagine</div><div class="footer-links">
+        <button class="flink" onclick="nav('home')">Home</button>
+        <button class="flink" onclick="nav('servizi')">Servizi</button>
+        <button class="flink" onclick="nav('chi-siamo')">Chi Siamo</button>
+        <button class="flink" onclick="nav('recensioni')">Recensioni</button>
+      </div></div>
+      <div><div class="footer-heading">Servizi</div><div class="footer-links">
+        <button class="flink" onclick="navToService('Taglio + Shampoo','15','30 min')">Taglio + Shampoo</button>
+        <button class="flink" onclick="navToService('Taglio + Barba','20','45 min')">Taglio + Barba</button>
+        <button class="flink" onclick="navToService('Rasatura Tradizionale','25','40 min')">Rasatura Tradizionale</button>
+        <button class="flink" onclick="navToService('Colore Capelli','40','90 min')">Colore Capelli</button>
+      </div></div>
+      <div><div class="footer-heading">Contatti</div><div class="footer-links">
+        <a class="flink" href="tel:+393280962635">+39 328 096 2635</a>
+        <span class="flink" style="cursor:default;color:var(--dim);">Piazza Natale Tommaso 6</span>
+        <span class="flink" style="cursor:default;color:var(--dim);">90147 Palermo (PA)</span>
+      </div></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© Torregrossa barber · Piazza Natale Tommaso 6 · Palermo</span>
+      <div class="social-links">
+        <a class="social-link" href="https://instagram.com" target="_blank" rel="noopener">Instagram</a>
+        <a class="social-link" href="https://facebook.com" target="_blank" rel="noopener">Facebook</a>
+      </div>
+    </div>
+  </div></footer>
+</div>
+
+<!-- ============================================================
+     SERVIZI PAGE
+     ============================================================ -->
+<div class="page" id="page-servizi">
+  <div style="padding:clamp(7rem,15vw,11rem) clamp(1.2rem,5vw,4rem) clamp(2rem,5vw,4rem);background:var(--black);position:relative;overflow:hidden;">
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(184,150,90,0.07),transparent 65%);pointer-events:none;"></div>
+    <div class="reveal"><div class="label">Trattamenti</div></div>
+    <h1 class="reveal" class="pagehero-h1" style="font-size:clamp(2.8rem,9vw,6.5rem);font-weight:300;line-height:1;letter-spacing:-0.02em;font-family:'Cormorant Garamond',serif;margin-bottom:1rem;">
+      Servizi &amp;<br><em style="color:var(--gold-light)">Prenotazioni</em>
+    </h1>
+    <p class="reveal" style="color:var(--dim);font-size:0.85rem;max-width:480px;line-height:1.8;">
+      <span class="rt-dot"></span>Disponibilità aggiornata in tempo reale
+    </p>
+  </div>
+
+  <div class="booking-wrap">
+    <div class="services-list-panel">
+      <h2 class="serif" style="font-size:1.6rem;font-style:italic;margin-bottom:0.4rem;">I Trattamenti</h2>
+      <p style="font-size:0.72rem;color:var(--dim);margin-bottom:1.5rem;">Clicca per selezionare</p>
+      <div class="service-row sel" onclick="selService(this,'Taglio + Shampoo','15','30 min')">
+        <div><div class="sr-name">Taglio + Shampoo</div><div class="sr-desc">Taglio personalizzato con shampoo e styling.</div><div class="sr-dur">⏱ 30 min</div></div>
+        <div class="sr-price">15€</div>
+      </div>
+      <div class="service-row" onclick="selService(this,'Taglio + Barba','20','45 min')">
+        <div><div class="sr-name">Taglio + Barba</div><div class="sr-desc">Taglio, shampoo e rifinitura barba.</div><div class="sr-dur">⏱ 45 min</div></div>
+        <div class="sr-price">20€</div>
+      </div>
+      <div class="service-row" onclick="selService(this,'Rasatura Tradizionale','25','40 min')">
+        <div><div class="sr-name">Rasatura Tradizionale</div><div class="sr-desc">Rasoio a mano libera con impacchi caldi.</div><div class="sr-dur">⏱ 40 min</div></div>
+        <div class="sr-price">25€</div>
+      </div>
+      <div class="service-row" onclick="selService(this,'Rifinitura Barba','12','20 min')">
+        <div><div class="sr-name">Rifinitura Barba</div><div class="sr-desc">Modellatura e definizione precisa del profilo.</div><div class="sr-dur">⏱ 20 min</div></div>
+        <div class="sr-price">12€</div>
+      </div>
+      <div class="service-row" onclick="selService(this,'Colore Capelli','40','90 min')">
+        <div><div class="sr-name">Colore Capelli</div><div class="sr-desc">Consulenza cromatica e applicazione professionale.</div><div class="sr-dur">⏱ 90 min</div></div>
+        <div class="sr-price">40€</div>
+      </div>
+      <div class="service-row" onclick="selService(this,'Trattamento Cuoio Capelluto','35','50 min')">
+        <div><div class="sr-name">Trattamento Cuoio Capelluto</div><div class="sr-desc">Massaggio professionale e trattamento rivitalizzante.</div><div class="sr-dur">⏱ 50 min</div></div>
+        <div class="sr-price">35€</div>
+      </div>
+      <div class="service-row" onclick="selService(this,'Taglio Bambino','10','20 min')">
+        <div><div class="sr-name">Taglio Bambino (fino 12 anni)</div><div class="sr-desc">Taglio con cura e pazienza dedicata ai piccoli.</div><div class="sr-dur">⏱ 20 min</div></div>
+        <div class="sr-price">10€</div>
+      </div>
+      <div class="service-row" onclick="selService(this,'Rasatura Testa','20','30 min')">
+        <div><div class="sr-name">Rasatura Testa</div><div class="sr-desc">Rasatura completa della testa con massaggio finale.</div><div class="sr-dur">⏱ 30 min</div></div>
+        <div class="sr-price">20€</div>
+      </div>
+    </div>
+
+    <div class="booking-form-panel">
+      <h2 class="serif" style="font-size:clamp(1.5rem,4vw,2.2rem);font-style:italic;margin-bottom:2rem;">Pianifica l'Appuntamento</h2>
+      <div class="sel-summary">
+        <div>
+          <div style="font-size:0.55rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--dim);">Servizio</div>
+          <div style="font-size:0.9rem;" id="selName">Taglio + Shampoo</div>
+          <div style="font-size:0.6rem;color:var(--dim);" id="selDur">30 min</div>
+        </div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--gold);" id="selPrice">15€</div>
+      </div>
+
+      <div style="margin-bottom:1.8rem;">
+        <div class="step-label"><span>1</span>Seleziona il Barbiere</div>
+        <div class="barbers">
+          <button class="barber-btn sel" onclick="selBarber(this,'Giovanni')" id="bb1">
+            <div class="barber-avatar" style="background:var(--gold);color:var(--black);">G</div>
+            <div class="barber-btn-name">Giovanni</div><div class="barber-btn-role">Titolare</div>
+          </button>
+          <button class="barber-btn" onclick="selBarber(this,'Marco')" id="bb2">
+            <div class="barber-avatar" style="background:var(--surface-3);border:1px solid rgba(184,150,90,0.3);color:var(--gold);">M</div>
+            <div class="barber-btn-name">Marco</div><div class="barber-btn-role">Collaboratore</div>
+          </button>
+        </div>
+      </div>
+
+      <div style="margin-bottom:1.8rem;">
+        <div class="step-label"><span>2</span>Scegli il Giorno</div>
+        <div class="calendar">
+          <div class="cal-header">
+            <button class="cal-nav" onclick="changeMonth(-1)">‹</button>
+            <div class="cal-month" id="calLabel">Aprile 2026</div>
+            <button class="cal-nav" onclick="changeMonth(1)">›</button>
+          </div>
+          <div class="cal-days-hdr">
+            <span>Lun</span><span>Mar</span><span>Mer</span><span>Gio</span><span>Ven</span><span>Sab</span><span>Dom</span>
+          </div>
+          <div class="cal-grid" id="calGrid"></div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:1.8rem;">
+        <div class="step-label"><span>3</span>Orario Disponibile <span class="rt-dot" style="margin-left:0.5rem;"></span></div>
+        <div id="timeGrid" class="time-grid">
+          <p id="timeGridPlaceholder" style="grid-column:1/-1;text-align:center;font-size:0.68rem;color:var(--dim);letter-spacing:0.2em;text-transform:uppercase;padding:1.5rem 0;">Seleziona una data per vedere gli orari</p>
+        </div>
+        <div id="timesLoading" class="times-loading" style="display:none;">Caricamento disponibilità...</div>
+      </div>
+
+      <div style="margin-bottom:1.8rem;">
+        <div class="step-label"><span>4</span>I Tuoi Dati</div>
+        <div class="form-row">
+          <input class="form-inp" type="text"  placeholder="Nome Completo *" id="bName" autocomplete="name"/>
+          <input class="form-inp" type="tel"   placeholder="Telefono" id="bPhone" autocomplete="tel"/>
+        </div>
+        <input class="form-inp" type="email" placeholder="Email (per la conferma) *" id="bEmail" autocomplete="email"/>
+        <textarea class="form-inp" rows="2" placeholder="Note (opzionale)" id="bNotes" style="resize:none;"></textarea>
+      </div>
+
+      <button class="btn btn-gold" style="width:100%;justify-content:center;padding:1.1rem;" id="submitBtn" onclick="submitBooking()">
+        ✦ Conferma Prenotazione
+      </button>
+      <p style="font-size:0.62rem;color:var(--dim);margin-top:0.8rem;text-align:center;">Pagamento in loco · Cancellazione gratuita entro 24h</p>
+    </div>
+  </div>
+
+  <footer style="background:var(--surface);border-top:1px solid rgba(184,150,90,0.12);padding:2rem clamp(1.2rem,5vw,4rem);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+    <span class="serif" style="font-size:1.1rem;color:var(--gold);">Torregrossa barber</span>
+    <span style="font-size:0.65rem;color:var(--dim);">Piazza Natale Tommaso 6 · 90147 Palermo · +39 328 096 2635</span>
+  </footer>
+</div>
+
+<!-- ============================================================
+     CHI SIAMO
+     ============================================================ -->
+<div class="page" id="page-chi-siamo">
+  <div style="padding:clamp(7rem,15vw,11rem) clamp(1.2rem,5vw,4rem) clamp(2rem,5vw,4rem);background:var(--black);position:relative;overflow:hidden;">
+    <div class="reveal"><div class="label">La Nostra Storia</div></div>
+    <h1 class="reveal" class="pagehero-h1" style="font-size:clamp(2.8rem,9vw,6.5rem);font-weight:300;line-height:1;letter-spacing:-0.02em;font-family:'Cormorant Garamond',serif;">
+      Chi<br><em style="color:var(--gold-light)">Siamo</em>
+    </h1>
+  </div>
+  <section style="background:var(--surface);">
+    <div class="container">
+      <div class="grid-2">
+        <div class="img-wrap img-border reveal-l" style="aspect-ratio:3/4;">
+          <img src="https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=800&h=1067&auto=format&fit=crop&q=85" alt="Interno Torregrossa barber"/>
+        </div>
+        <div class="reveal-r">
+          <div class="label">Il Salone</div>
+          <h2 style="margin-bottom:1.5rem;">Tradizione &amp; <span class="gold">Professionalità</span></h2>
+          <p style="color:var(--warm-gray);line-height:1.9;font-size:0.88rem;margin-bottom:1rem;">Torregrossa barber è il punto di riferimento per il grooming maschile nel quartiere Tommaso Natale di Palermo, in Piazza Natale Tommaso 6.</p>
+          <p style="color:var(--warm-gray);line-height:1.9;font-size:0.88rem;margin-bottom:1rem;">Un salone accogliente dove ogni cliente viene trattato con cura e attenzione. Giovanni ascolta ogni cliente, capisce il look desiderato e lo realizza con tecnica e precisione.</p>
+          <p style="color:var(--warm-gray);line-height:1.9;font-size:0.88rem;">Con oltre 4.800 recensioni su Google e una valutazione media di 4,8 stelle, la qualità del servizio parla da sola.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section style="background:var(--black);">
+    <div class="container">
+      <div class="reveal"><div class="label">I Nostri Valori</div><h2>Cosa ci <span class="gold">Definisce</span></h2></div>
+      <div class="values-grid">
+        <div class="value-card reveal d1"><div class="value-num">01</div><div class="value-title">Qualità</div><div class="value-text">Ogni taglio viene eseguito con attenzione ai dettagli e con i migliori prodotti disponibili.</div></div>
+        <div class="value-card reveal d2"><div class="value-num">02</div><div class="value-title">Professionalità</div><div class="value-text">Giovanni e il suo team sono costantemente aggiornati sulle ultime tecniche e tendenze.</div></div>
+        <div class="value-card reveal d3"><div class="value-num">03</div><div class="value-title">Accoglienza</div><div class="value-text">Un ambiente accogliente dove i clienti si sentono a proprio agio. La maggior parte torna da anni.</div></div>
+      </div>
+    </div>
+  </section>
+  <footer style="background:var(--surface);border-top:1px solid rgba(184,150,90,0.12);padding:2rem clamp(1.2rem,5vw,4rem);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+    <span class="serif" style="font-size:1.1rem;color:var(--gold);">Torregrossa barber</span>
+    <button class="btn btn-gold" onclick="nav('servizi')">Prenota Ora ✦</button>
+  </footer>
+</div>
+
+<!-- ============================================================
+     RECENSIONI
+     ============================================================ -->
+<div class="page" id="page-recensioni">
+  <div style="padding:clamp(7rem,15vw,11rem) clamp(1.2rem,5vw,4rem) clamp(2rem,5vw,4rem);background:var(--black);">
+    <div class="reveal"><div class="label">Google Reviews</div></div>
+    <h1 class="reveal" class="pagehero-h1" style="font-size:clamp(2.8rem,9vw,6.5rem);font-weight:300;line-height:1;letter-spacing:-0.02em;font-family:'Cormorant Garamond',serif;">Recensioni</h1>
+  </div>
+  <section style="background:var(--surface);">
+    <div class="container">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,180px),1fr));gap:1px;background:rgba(184,150,90,0.1);">
+        <div class="reveal d1" style="background:var(--surface-2);padding:2.5rem;text-align:center;"><div class="stat-num">4.8</div><div class="stat-label" style="font-size:0.6rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--dim);">Voto Medio</div></div>
+        <div class="reveal d2" style="background:var(--surface-2);padding:2.5rem;text-align:center;"><div class="stat-num">4.800+</div><div class="stat-label" style="font-size:0.6rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--dim);">Recensioni Google</div></div>
+        <div class="reveal d3" style="background:var(--surface-2);padding:2.5rem;text-align:center;"><div class="stat-num">★★★★★</div><div class="stat-label" style="font-size:0.6rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--dim);">Valutazione</div></div>
+      </div>
+    </div>
+  </section>
+  <section style="background:var(--black);">
+    <div class="container">
+      <div class="reveal"><div class="label">Testimonianze Reali</div><h2>Cosa Dicono i <span class="gold">Clienti</span></h2></div>
+      <p class="reveal" style="color:var(--dim);font-size:0.75rem;margin-top:0.5rem;">Recensioni verificate da Google Maps</p>
+      <div class="reviews-grid">
+        <div class="review-card reveal d1"><div class="review-stars">★★★★★</div><p class="review-text">"Sfumatura a regola d'arte. Personale alla mano, gentilissimi e professionali. Già al primo taglio mi sono trovato più che bene. Ottimo barbiere su Palermo."</p><div class="review-author"><div class="review-avatar">UM</div><div><div class="review-name">Umberto M.</div><div class="review-role">Google · 5/5 · 3 anni fa</div></div></div></div>
+        <div class="review-card reveal d2"><div class="review-stars">★★★★★</div><p class="review-text">"Sempre gentile e professionale. Sono cliente da più di 10 anni e mi trovo molto bene."</p><div class="review-author"><div class="review-avatar">RG</div><div><div class="review-name">Roberto Genova</div><div class="review-role">Google · 5/5 · un anno fa</div></div></div></div>
+        <div class="review-card reveal d3"><div class="review-stars">★★★★★</div><p class="review-text">"Grandissima esperienza, capacità e professionalità da una vita. Da più di un anno ha un nuovo cliente: mio figlio, che con tutta tranquillità si fa tagliare da Giovanni."</p><div class="review-author"><div class="review-avatar">DD</div><div><div class="review-name">Domenico Di Trapani</div><div class="review-role">Google · 5/5 · 4 anni fa</div></div></div></div>
+      </div>
+      <div style="text-align:center;margin-top:2.5rem;" class="reveal">
+        <a class="btn btn-outline" href="https://maps.google.com/?q=Barber+Shop+Giovanni+Montano+Palermo" target="_blank" rel="noopener">Leggi tutte su Google →</a>
+      </div>
+    </div>
+  </section>
+  <div class="cta-banner"><div class="reveal">
+    <h2>La tua opinione conta</h2>
+    <p>Hai visitato il salone? Lascia una recensione su Google</p>
+    <a class="btn btn-black" href="https://g.page/r/" target="_blank" rel="noopener">✦ Lascia una Recensione</a>
+  </div></div>
+  <footer style="background:var(--surface);border-top:1px solid rgba(184,150,90,0.12);padding:2rem clamp(1.2rem,5vw,4rem);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+    <span class="serif" style="font-size:1.1rem;color:var(--gold);">Torregrossa barber</span>
+    <button class="btn btn-gold" onclick="nav('servizi')">Prenota Ora ✦</button>
+  </footer>
+</div>
+
+<script>
+// ================================================================
+// SUPABASE CONFIG — inserisci i tuoi valori dopo la creazione
+// ================================================================
+const SUPABASE_URL  = 'https://fvcgcyzrwbhubasropph.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ2Y2djeXpyd2JodWJhc3JvcHBoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxOTY3NDQsImV4cCI6MjA5MTc3Mjc0NH0._0AF-v8wQmHA4kJ9wa6gJbfpwZUnrzi0vtcGfzGAwxc';
+const W3F_KEY       = 'b5f6e8c5-0296-4afb-b87f-23608b75e1dd';
+
+// ── EMAILJS — email al cliente ───────────────────────────────────
+// SETUP (una sola volta):
+// 1. Vai su https://www.emailjs.com → crea account gratuito con l'email del barbiere
+// 2. Email Services → Add New Service → Gmail → collega l'account Gmail
+// 3. Email Templates → Create New Template
+//    • Subject:  ✦ Conferma appuntamento — Torregrossa barber
+//    • To Email: {{to_email}}
+//    • Body: copia il testo dal blocco TEMPLATE più in basso
+//    • Salva e copia il Template ID
+// 4. Account → API Keys → copia la Public Key
+const EMAILJS_KEY      = 'aEWwk3s_qXbo2_XhC';
+const EMAILJS_SERVICE  = 'service_zanvlzd';
+const EMAILJS_TEMPLATE = 'template_6aw2wpu';
+// ─────────────────────────────────────────────────────────────────
+// TEMPLATE BODY da incollare su emailjs.com (tipo: HTML, non plain text):
+// ─────────────────────────────────────────────────────────────────
+// <p>Gentile {{to_name}},</p>
+// <p>La sua prenotazione è confermata.</p>
+// <table>
+//   <tr><td><strong>Servizio</strong></td><td>{{servizio}}</td></tr>
+//   <tr><td><strong>Barbiere</strong></td><td>{{barbiere}}</td></tr>
+//   <tr><td><strong>Data</strong></td><td>{{data}}</td></tr>
+//   <tr><td><strong>Orario</strong></td><td>{{orario}}</td></tr>
+//   <tr><td><strong>Prezzo</strong></td><td>{{prezzo}}</td></tr>
+//   <tr><td><strong>Durata</strong></td><td>{{durata}}</td></tr>
+// </table>
+// <p>📅 <a href="{{gcal_link}}">Aggiungi al calendario Google</a></p>
+// <p>❌ <a href="{{cancel_link}}">Annulla prenotazione</a> (gratuito entro 24h)</p>
+// <p>Torregrossa barber<br>
+// Piazza Natale Tommaso 6 — 90147 Palermo<br>
+// +39 328 096 2635</p>
+// ─────────────────────────────────────────────────────────────────
+
+let _sb = null;
+function initSupabase() {
+  if(_sb && _sb.auth) return;
+  const mod = window.supabase;
+  if(!mod) return;
+  try {
+    const fn = typeof mod.createClient === 'function' ? mod.createClient
+             : typeof mod.default?.createClient === 'function' ? mod.default.createClient
+             : null;
+    if(!fn) return;
+    const client = fn(SUPABASE_URL, SUPABASE_ANON);
+    if(client && client.auth) _sb = client;
+  } catch(e) {}
+}
+initSupabase();
+
+function initEmailJS() {
+  if(window.emailjs && EMAILJS_KEY && !EMAILJS_KEY.startsWith('INSERISCI')) {
+    emailjs.init({ publicKey: EMAILJS_KEY });
+  }
+}
+initEmailJS();
+
+// Stato ultimo booking (per cancellazione dal modal)
+let lastBookingId    = null;
+let lastCancelToken  = null;
+
+// Genera link Google Calendar
+function buildGCalLink(title, dt, durStr, location) {
+  const pad = n => String(n).padStart(2,'0');
+  const mins = parseInt(durStr) || 30;
+  const end  = new Date(dt.getTime() + mins * 60000);
+  const fmt  = d => `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
+  return `https://calendar.google.com/calendar/render?action=TEMPLATE`
+    + `&text=${encodeURIComponent(title + ' — Torregrossa barber')}`
+    + `&dates=${fmt(dt)}/${fmt(end)}`
+    + `&location=${encodeURIComponent(location)}`
+    + `&details=${encodeURIComponent('Appuntamento confermato. Per annullare usa il link nell\'email di conferma.')}`;
+}
+
+// ── STATE ──
+let bService = {name:'Taglio + Shampoo', price:'15', dur:'30 min'};
+let bBarber  = (new URLSearchParams(window.location.search).get('titolare')) || 'Giovanni';
+let bDate    = null;
+let bTime    = null;
+let calMonth, calYear;
+
+const CLOSED = [0, 1]; // Dom=0, Lun=1
+const MONTHS = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
+const WDAYS  = ['domenica','lunedì','martedì','mercoledì','giovedì','venerdì','sabato'];
+
+// Init current month
+const NOW = new Date();
+calMonth = NOW.getMonth() + 1;
+calYear  = NOW.getFullYear();
+
+// ── LOADER ──
+let _loaderDismissed = false;
+function dismissLoader() {
+  if(_loaderDismissed) return;
+  _loaderDismissed = true;
+  const loader = document.getElementById('loader');
+  if(loader) {
+    loader.classList.add('out');
+    // Nasconde definitivamente dopo che le tendine hanno finito di scorrere
+    setTimeout(() => { loader.style.visibility = 'hidden'; }, 2200);
+  }
+  initReveal();
+  buildCal();
+}
+
+// Animazione percentuale JS — conta 0→100 e poi chiude il loader
+(function startLoaderProgress() {
+  const pctEl  = document.getElementById('ldrPct');
+  const fillEl = document.getElementById('ldrFill');
+  const dotEl  = document.getElementById('ldrDot');
+  const DURATION   = 3100; // durata 0→100%
+  const START_DELAY = 920; // parte quando la barra è visibile
+  let startTime = null;
+
+  function easeInOut(t) {
+    return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+  }
+
+  function tick(now) {
+    if(!startTime) startTime = now;
+    const raw   = Math.min((now - startTime) / DURATION, 1);
+    const eased = easeInOut(raw);
+    const pct   = Math.round(eased * 100);
+
+    if(pctEl)  pctEl.textContent  = pct + '%';
+    if(fillEl) fillEl.style.width = pct + '%';
+    if(dotEl)  dotEl.style.left   = 'calc(' + pct + '% - 2.5px)';
+
+    if(raw < 1) {
+      requestAnimationFrame(tick);
+    } else {
+      if(pctEl) pctEl.textContent = '100%';
+      setTimeout(dismissLoader, 480);
+    }
+  }
+
+  setTimeout(() => requestAnimationFrame(tick), START_DELAY);
+})();
+
+// ── NAV ──
+// menuOpen is shared with the early-load script via window.menuOpen
+var menuOpen = false;
+function nav(page) {
+  // Dismiss loader immediately when user navigates
+  dismissLoader();
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const t = document.getElementById('page-'+page);
+  if(t) { t.classList.add('active'); window.scrollTo({top:0,behavior:'smooth'}); }
+  document.querySelectorAll('.nav-link').forEach(l => {
+    l.classList.toggle('active', l.getAttribute('onclick') && l.getAttribute('onclick').includes("'"+page+"'"));
+  });
+  if(menuOpen) toggleMenu();
+  setTimeout(initReveal, 80);
+  // Ricostruisci il calendario ogni volta che si va su servizi
+  if(page === 'servizi') {
+    setTimeout(function(){ buildCal(); }, 80);
+    if(bDate && typeof loadAvailability==='function') loadAvailability(bDate, bBarber);
+  }
+}
+function toggleMenu() {
+  menuOpen = !menuOpen;
+  var btn     = document.getElementById('hamburger');
+  var overlay = document.getElementById('overlay');
+  if(btn)     btn.classList.toggle('open', menuOpen);
+  if(overlay) overlay.classList.toggle('open', menuOpen);
+  document.body.style.overflow = menuOpen ? 'hidden' : '';
+}
+window.addEventListener('scroll', () => {
+  document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 50);
+  const pi = document.getElementById('parallaxImg');
+  if(pi) pi.style.transform = `translateY(${window.scrollY * 0.12}px)`;
+});
+
+// ── REVEAL ──
+function initReveal() {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+  }, {threshold: 0.08});
+  document.querySelectorAll('.reveal,.reveal-l,.reveal-r').forEach(el => {
+    el.classList.remove('visible'); obs.observe(el);
+  });
+  document.querySelectorAll('[data-count]').forEach(el => {
+    const target = parseInt(el.dataset.count);
+    let count = 0;
+    const step = Math.ceil(target / 60);
+    const tim = setInterval(() => {
+      count = Math.min(count + step, target);
+      el.textContent = count.toLocaleString('it-IT') + '+';
+      if(count >= target) clearInterval(tim);
+    }, 25);
+  });
+}
+
+// ── SERVICE SELECT ──
+function selService(el, name, price, dur) {
+  document.querySelectorAll('.service-row').forEach(r => r.classList.remove('sel'));
+  el.classList.add('sel');
+  bService = {name, price, dur};
+  document.getElementById('selName').textContent  = name;
+  document.getElementById('selPrice').textContent = price + '€';
+  document.getElementById('selDur').textContent   = dur;
+}
+
+function navToService(name, price, dur) {
+  nav('servizi');
+  setTimeout(() => {
+    const row = Array.from(document.querySelectorAll('.service-row')).find(r => {
+      const sr = r.querySelector('.sr-name');
+      return sr && sr.textContent.trim() === name;
+    });
+    if(row) selService(row, name, price, dur);
+  }, 120);
+}
+
+// ── BARBER SELECT ──
+function selBarber(el, name) {
+  document.querySelectorAll('.barber-btn').forEach(b => b.classList.remove('sel'));
+  el.classList.add('sel');
+  bBarber = name;
+  if(bDate) loadAvailability(bDate, bBarber);
+}
+
+// ── CALENDAR ──
+
+// Funzione globale chiamata dall'onclick delle date
+function selectDay(ds) {
+  document.querySelectorAll('.cal-day').forEach(function(b){ b.classList.remove('sel'); });
+  var btn = document.querySelector('.cal-day[data-date="'+ds+'"]');
+  if(btn) btn.classList.add('sel');
+  bDate = ds;
+  bTime = null;
+  loadAvailability(ds, bBarber);
+  setTimeout(function(){
+    var tg = document.getElementById('timeGrid');
+    if(tg) tg.scrollIntoView({behavior:'smooth', block:'nearest'});
+  }, 80);
+}
+
+function buildCal() {
+  var grid = document.getElementById('calGrid');
+  if(!grid) return;
+  grid.innerHTML = '';
+  document.getElementById('calLabel').textContent = MONTHS[calMonth-1] + ' ' + calYear;
+  var first = new Date(calYear, calMonth-1, 1).getDay();
+  var off   = first === 0 ? 6 : first - 1;
+  var days  = new Date(calYear, calMonth, 0).getDate();
+  var today = new Date();
+  var todayY = today.getFullYear(), todayM = today.getMonth(), todayD = today.getDate();
+  for(var i = 0; i < off; i++) {
+    var e = document.createElement('button'); e.className = 'cal-day empty dis'; e.disabled = true;
+    grid.appendChild(e);
+  }
+  for(var d = 1; d <= days; d++) {
+    var btn = document.createElement('button'); btn.className = 'cal-day';
+    btn.textContent = d;
+    var dt  = new Date(calYear, calMonth-1, d);
+    var dow = dt.getDay();
+    var isPast = (calYear < todayY) || (calYear === todayY && calMonth-1 < todayM) || (calYear === todayY && calMonth-1 === todayM && d < todayD);
+    if(CLOSED.includes(dow) || isPast) {
+      btn.classList.add('dis'); btn.disabled = true;
+    } else {
+      var ds = calYear + '-' + String(calMonth).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+      btn.setAttribute('data-date', ds);
+      if(calYear === todayY && calMonth-1 === todayM && d === todayD) btn.classList.add('today');
+      if(bDate === ds) btn.classList.add('sel');
+      btn.setAttribute('onclick', 'selectDay("' + ds + '")');
+    }
+    grid.appendChild(btn);
+  }
+}
+function changeMonth(delta) {
+  let nm = calMonth + delta, ny = calYear;
+  if(nm > 12) { nm = 1; ny++; }
+  if(nm <  1) { nm = 12; ny--; }
+  // Non permettere di tornare a mesi passati
+  const now = new Date();
+  if(ny < now.getFullYear() || (ny === now.getFullYear() && nm < now.getMonth() + 1)) return;
+  calMonth = nm; calYear = ny;
+  bDate = null; bTime = null; buildCal();
+  document.getElementById('timeGrid').innerHTML = '<p style="grid-column:1/-1;text-align:center;font-size:0.68rem;color:var(--dim);letter-spacing:0.2em;text-transform:uppercase;padding:1.5rem 0;">Seleziona una data per vedere gli orari</p>';
+}
+
+// ── REAL-TIME AVAILABILITY ──
+const ALL_SLOTS = ['09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00'];
+
+// Store realtime subscriptions so we can clean them up
+let realtimeChannel = null;
+let blocchiChannel  = null;
+
+async function loadAvailability(date, barber) {
+  const grid = document.getElementById('timeGrid');
+  const loading = document.getElementById('timesLoading');
+  if(!grid) return;
+
+  // Se Supabase non è configurato, mostra subito gli slot (filtrando solo i passati)
+  if(!_sb || SUPABASE_URL === 'YOUR_SUPABASE_URL') {
+    if(loading) loading.style.display = 'none';
+    renderTimeSlots([], date, barber);
+    return;
+  }
+
+  // Mostra indicatore di caricamento e attende la risposta reale di Supabase
+  grid.innerHTML = '';
+  if(loading) loading.style.display = '';
+
+  try {
+    const t = new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 6000));
+    const q = Promise.all([
+      _sb.from('prenotazioni').select('orario')
+        .eq('data', date).eq('barbiere', barber)
+        .in('stato', ['confermata', 'in_attesa']),
+      _sb.from('blocchi').select('orario')
+        .eq('data', date).eq('barbiere', barber)
+    ]);
+    const [resBookings, resBlocked] = await Promise.race([q, t]);
+    if(loading) loading.style.display = 'none';
+    const booked = (resBookings && !resBookings.error)
+      ? [
+          ...resBookings.data.map(r => r.orario),
+          ...((resBlocked && resBlocked.data) || []).map(r => r.orario)
+        ]
+      : [];
+    renderTimeSlots(booked, date, barber);
+
+    // Realtime updates
+    if(realtimeChannel) _sb.removeChannel(realtimeChannel);
+    if(blocchiChannel)  _sb.removeChannel(blocchiChannel);
+    realtimeChannel = _sb.channel('pre_' + date)
+      .on('postgres_changes', { event:'*', schema:'public', table:'prenotazioni', filter:'data=eq.'+date },
+        () => { loadAvailability(date, barber); }).subscribe();
+    blocchiChannel = _sb.channel('blo_' + date)
+      .on('postgres_changes', { event:'*', schema:'public', table:'blocchi', filter:'data=eq.'+date },
+        () => { loadAvailability(date, barber); }).subscribe();
+  } catch(e) {
+    if(loading) loading.style.display = 'none';
+    grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;font-size:0.68rem;color:var(--red);letter-spacing:0.2em;text-transform:uppercase;padding:1.5rem 0;">Errore nel caricamento disponibilità. Riprova.</p>';
+  }
+}
+
+function renderTimeSlots(bookedTimes, date, barber) {
+  const grid = document.getElementById('timeGrid');
+  if(!grid) return;
+  grid.innerHTML = '';
+
+  // Calcola gli orari già passati per la giornata odierna
+  const now = new Date();
+  const todayISO = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
+  const isToday = date === todayISO;
+  const nowMinutes = now.getHours() * 60 + now.getMinutes();
+
+  ALL_SLOTS.forEach(t => {
+    const btn = document.createElement('button');
+    btn.className = 'time-btn';
+    btn.setAttribute('type', 'button');
+    btn.textContent = t;
+
+    const [slotH, slotMin] = t.split(':').map(Number);
+    const slotMinutes = slotH * 60 + slotMin;
+    const isPast = isToday && slotMinutes <= nowMinutes;
+
+    if(bookedTimes.includes(t) || isPast) {
+      btn.classList.add('booked');
+      btn.title = isPast && !bookedTimes.includes(t) ? 'Orario passato' : 'Non disponibile';
+    } else {
+      if(bTime === t) btn.classList.add('sel');
+      btn.onclick = () => {
+        document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('sel'));
+        btn.classList.add('sel');
+        bTime = t;
+      };
+    }
+    grid.appendChild(btn);
+  });
+}
+
+// ── BOOKING SUBMIT ──
+async function submitBooking() {
+  const name  = document.getElementById('bName').value.trim();
+  const email = document.getElementById('bEmail').value.trim();
+  const phone = document.getElementById('bPhone').value.trim();
+  const notes = document.getElementById('bNotes').value.trim();
+
+  if(!name)  { toast('⚠️', 'Inserisci il tuo nome'); return; }
+  if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { toast('⚠️', 'Email non valida'); return; }
+  if(!bDate) { toast('⚠️', 'Seleziona una data'); return; }
+  if(!bTime) { toast('⚠️', 'Seleziona un orario'); return; }
+
+  const btn = document.getElementById('submitBtn');
+  btn.textContent = '⏳ Invio...'; btn.disabled = true;
+
+  try {
+    // 1. Save to Supabase
+    let bookingId = null;
+    const cancelToken = crypto.randomUUID();
+    if(_sb && SUPABASE_URL !== 'YOUR_SUPABASE_URL') {
+      const { data, error } = await _sb.from('prenotazioni').insert([{
+        nome:         name,
+        email:        email,
+        telefono:     phone || null,
+        note:         notes || null,
+        servizio:     bService.name,
+        prezzo:       parseInt(bService.price),
+        durata:       bService.dur,
+        barbiere:     bBarber,
+        data:         bDate,
+        orario:       bTime,
+        stato:        'in_attesa',
+        cancel_token: cancelToken,
+        created_at:   new Date().toISOString()
+      }]).select().single();
+      if(error) throw error;
+      bookingId = data?.id;
+    }
+    lastBookingId   = bookingId;
+    lastCancelToken = cancelToken;
+
+    // 2. Build date strings
+    const [y, m, d] = bDate.split('-').map(Number);
+    const [h, min]  = bTime.split(':').map(Number);
+    const apptDt    = new Date(y, m-1, d, h, min);
+    const apptStr   = `${WDAYS[apptDt.getDay()]} ${d} ${MONTHS[m-1].toLowerCase()} ${y}`;
+
+    // 3a. Email al BARBIERE via Web3Forms (arriva all'account registrato su web3forms.com)
+    const bodyBarber = `NUOVA PRENOTAZIONE #${bookingId||'—'}
+
+Cliente:  ${name}
+Email:    ${email}
+Telefono: ${phone||'—'}
+
+Servizio: ${bService.name}
+Barbiere: ${bBarber}
+Data:     ${apptStr}
+Orario:   ${bTime}
+Durata:   ${bService.dur}
+Prezzo:   ${bService.price}€
+
+Note: ${notes||'nessuna'}`;
+    await w3f({ access_key: W3F_KEY, subject: `📅 Nuova prenotazione — ${name} | ${bDate} ${bTime}`, name, email, message: bodyBarber });
+
+    // 3b. Email di CONFERMA al CLIENTE via EmailJS (arriva all'email del cliente)
+    const gcalLink    = buildGCalLink(bService.name, apptDt, bService.dur, 'Piazza Natale Tommaso 6, Palermo');
+    const cancelUrl   = `${window.location.origin}${window.location.pathname}?cancel=${cancelToken}`;
+    if(window.emailjs && EMAILJS_KEY && !EMAILJS_KEY.startsWith('INSERISCI')) {
+      await emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
+        to_name:     name,
+        to_email:    email,
+        servizio:    bService.name,
+        barbiere:    bBarber,
+        data:        apptStr,
+        orario:      bTime,
+        prezzo:      bService.price + '€',
+        durata:      bService.dur,
+        gcal_link:   gcalLink,
+        cancel_link: cancelUrl
+      });
+    }
+
+    // 4. Update UI
+    document.getElementById('bookingSummary').innerHTML =
+      `<div class="bsum-row"><span class="bsum-label">Servizio</span><span>${bService.name}</span></div>`+
+      `<div class="bsum-row"><span class="bsum-label">Barbiere</span><span>${bBarber}</span></div>`+
+      `<div class="bsum-row"><span class="bsum-label">Data</span><span>${apptStr}</span></div>`+
+      `<div class="bsum-row"><span class="bsum-label">Orario</span><span>${bTime}</span></div>`+
+      `<div class="bsum-row"><span class="bsum-label">Prezzo</span><span style="color:var(--gold)">${bService.price}€</span></div>`+
+      `<div class="bsum-row"><span class="bsum-label">✉️ Conferma a</span><span>${email}</span></div>`;
+    // Aggiorna link calendario nel modal
+    const gcalBtn = document.getElementById('modalGcalBtn');
+    if(gcalBtn) gcalBtn.href = gcalLink;
+
+    document.getElementById('confirmModal').classList.add('open');
+    bTime = null;
+    loadAvailability(bDate, bBarber);
+    ['bName','bEmail','bPhone','bNotes'].forEach(id => document.getElementById(id).value = '');
+    setTimeout(() => toast('✉️', 'Confermato! Email inviata al cliente.'), 600);
+
+  } catch(err) {
+    console.error(err);
+    toast('❌', 'Errore. Chiama il +39 328 096 2635');
+  } finally {
+    btn.textContent = '✦ Conferma Prenotazione'; btn.disabled = false;
+  }
+}
+
+async function w3f(data) {
+  const fd = new FormData();
+  Object.entries(data).forEach(([k,v]) => fd.append(k, v));
+  const r = await fetch('https://api.web3forms.com/submit', {method:'POST', body:fd});
+  const j = await r.json();
+  if(!j.success) throw new Error(j.message);
+}
+
+function closeModal() { document.getElementById('confirmModal').classList.remove('open'); }
+
+// ── TOAST ──
+function toast(icon, text) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastIcon').textContent = icon;
+  document.getElementById('toastText').textContent = text;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 5000);
+}
+
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal(); });
+</script>
+
+<!-- ══════════════════════════════════════════════════════
+     ADMIN OVERLAY
+══════════════════════════════════════════════════════ -->
+<style>
+#adminOverlay{position:fixed;inset:0;z-index:9999;background:var(--black);display:none;flex-direction:column;overflow-y:auto}
+#adminOverlay.open{display:flex}
+.adm-header{background:var(--surface);border-bottom:1px solid rgba(184,150,90,0.12);padding:1rem clamp(1rem,4vw,3rem);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;flex-shrink:0}
+.adm-logo{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-style:italic;color:var(--gold-light)}
+.adm-header-right{display:flex;align-items:center;gap:1rem}
+.adm-user-lbl{font-size:0.7rem;color:var(--dim)}
+.adm-btn-out{background:transparent;border:1px solid rgba(184,150,90,0.25);color:var(--gold);padding:0.45rem 1rem;font-size:0.6rem;letter-spacing:0.3em;text-transform:uppercase;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.2s}
+.adm-btn-out:hover{background:rgba(184,150,90,0.08)}
+.adm-btn-close{background:transparent;border:none;color:var(--dim);font-size:1.4rem;cursor:pointer;padding:0.3rem 0.6rem;line-height:1;transition:color 0.2s}
+.adm-btn-close:hover{color:var(--off-white)}
+.adm-body{padding:clamp(1.2rem,3vw,2.5rem) clamp(1rem,4vw,3rem);flex:1}
+/* Login */
+#admLogin{min-height:80vh;display:flex;align-items:center;justify-content:center;padding:2rem}
+.adm-login-card{background:var(--surface);border:1px solid rgba(184,150,90,0.15);padding:3rem 2.5rem;width:100%;max-width:380px}
+.adm-login-logo{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-style:italic;color:var(--gold-light);text-align:center;margin-bottom:0.3rem}
+.adm-login-sub{font-size:0.6rem;letter-spacing:0.4em;text-transform:uppercase;color:var(--dim);text-align:center;margin-bottom:2.5rem}
+.adm-field{margin-bottom:1.2rem}
+.adm-field label{display:block;font-size:0.6rem;letter-spacing:0.35em;text-transform:uppercase;color:var(--dim);margin-bottom:0.5rem}
+.adm-field input{width:100%;background:var(--surface-3);border:1px solid rgba(184,150,90,0.15);color:var(--off-white);padding:0.8rem 1rem;font-family:'Outfit',sans-serif;font-size:0.85rem;outline:none;transition:border-color 0.2s}
+.adm-field input:focus{border-color:var(--gold)}
+.adm-btn-login{width:100%;background:var(--gold);color:var(--black);border:none;cursor:pointer;padding:0.9rem;font-size:0.65rem;font-weight:600;letter-spacing:0.3em;text-transform:uppercase;font-family:'Outfit',sans-serif;transition:background 0.2s;margin-top:0.4rem}
+.adm-btn-login:hover{background:var(--gold-light)}
+.adm-login-err{color:var(--red);font-size:0.75rem;text-align:center;margin-top:1rem;min-height:1.2em}
+/* Stats */
+.adm-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin-bottom:2.5rem}
+.adm-stat{background:var(--surface);border:1px solid rgba(184,150,90,0.12);padding:1.2rem 1.5rem}
+.adm-stat-val{font-family:'Cormorant Garamond',serif;font-size:2.2rem;color:var(--gold-light);line-height:1}
+.adm-stat-lbl{font-size:0.58rem;letter-spacing:0.35em;text-transform:uppercase;color:var(--dim);margin-top:0.4rem}
+/* Section */
+.adm-sec{font-size:0.6rem;letter-spacing:0.4em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem;display:flex;align-items:center;gap:0.8rem}
+.adm-sec::before{content:'';width:20px;height:1px;background:var(--gold)}
+/* Filters */
+.adm-filters{display:flex;flex-wrap:wrap;gap:0.7rem;margin-bottom:1.5rem;align-items:center}
+.adm-filters input,.adm-filters select{background:var(--surface-2);border:1px solid rgba(184,150,90,0.15);color:var(--off-white);padding:0.6rem 0.9rem;font-family:'Outfit',sans-serif;font-size:0.78rem;outline:none;transition:border-color 0.2s}
+.adm-filters input:focus,.adm-filters select:focus{border-color:var(--gold)}
+.adm-filters select option{background:var(--surface-2)}
+.adm-f-btn{background:var(--gold);color:var(--black);border:none;cursor:pointer;padding:0.6rem 1.2rem;font-size:0.6rem;font-weight:600;letter-spacing:0.25em;text-transform:uppercase;font-family:'Outfit',sans-serif;transition:background 0.2s}
+.adm-f-btn:hover{background:var(--gold-light)}
+.adm-f-rst{background:transparent;border:1px solid rgba(184,150,90,0.2);color:var(--dim);padding:0.6rem 1rem;font-size:0.6rem;letter-spacing:0.25em;text-transform:uppercase;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.2s}
+.adm-f-rst:hover{border-color:var(--gold);color:var(--gold)}
+/* Table */
+.adm-table-wrap{overflow-x:auto;margin-bottom:3rem;border:1px solid rgba(184,150,90,0.08)}
+.adm-table-wrap table{width:100%;border-collapse:collapse;font-size:0.8rem}
+.adm-table-wrap thead th{background:var(--surface-2);padding:0.75rem 1rem;text-align:left;font-size:0.58rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--dim);white-space:nowrap;border-bottom:1px solid rgba(184,150,90,0.12)}
+.adm-table-wrap tbody tr{border-bottom:1px solid rgba(255,255,255,0.04);transition:background 0.15s}
+.adm-table-wrap tbody tr:hover{background:rgba(184,150,90,0.04)}
+.adm-table-wrap tbody td{padding:0.85rem 1rem;vertical-align:middle}
+.adm-badge{display:inline-block;padding:0.25rem 0.7rem;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase}
+.adm-badge-attesa{background:rgba(251,146,60,0.12);color:#fb923c}
+.adm-badge-ok{background:rgba(74,222,128,0.1);color:var(--green)}
+.adm-badge-no{background:rgba(248,113,113,0.1);color:var(--red)}
+.adm-act-row{display:flex;gap:0.4rem;align-items:center}
+.adm-act{border:none;cursor:pointer;padding:0.3rem 0.75rem;font-size:0.58rem;letter-spacing:0.2em;text-transform:uppercase;font-family:'Outfit',sans-serif;font-weight:500;transition:opacity 0.15s;white-space:nowrap}
+.adm-act:hover{opacity:0.75}
+.adm-act-ok{background:rgba(74,222,128,0.12);color:var(--green)}
+.adm-act-no{background:rgba(248,113,113,0.1);color:var(--red)}
+.adm-act-del{background:transparent;color:var(--dim);border:1px solid rgba(255,255,255,0.08)}
+.adm-act-del:hover{border-color:var(--red);color:var(--red);opacity:1}
+.adm-no-data{text-align:center;padding:3rem;color:var(--dim);font-size:0.85rem;font-style:italic}
+/* Blocchi */
+.adm-block-panel{background:var(--surface);border:1px solid rgba(184,150,90,0.12);padding:1.8rem 2rem;margin-bottom:3rem}
+.adm-block-form{display:flex;flex-wrap:wrap;gap:0.8rem;align-items:flex-end;margin-bottom:1.5rem}
+.adm-bf label{display:block;font-size:0.58rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--dim);margin-bottom:0.45rem}
+.adm-bf input,.adm-bf select{background:var(--surface-3);border:1px solid rgba(184,150,90,0.15);color:var(--off-white);padding:0.6rem 0.9rem;font-family:'Outfit',sans-serif;font-size:0.78rem;outline:none;transition:border-color 0.2s;min-width:130px}
+.adm-bf input:focus,.adm-bf select:focus{border-color:var(--gold)}
+.adm-bf select option{background:var(--surface-3)}
+.adm-btn-block{background:rgba(248,113,113,0.12);border:1px solid rgba(248,113,113,0.25);color:var(--red);padding:0.6rem 1.3rem;font-size:0.6rem;font-weight:600;letter-spacing:0.25em;text-transform:uppercase;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.2s}
+.adm-btn-block:hover{background:rgba(248,113,113,0.22)}
+.adm-blocchi-list{display:flex;flex-wrap:wrap;gap:0.6rem}
+.adm-blocco-tag{background:var(--surface-3);border:1px solid rgba(248,113,113,0.18);padding:0.35rem 0.8rem;font-size:0.72rem;display:flex;align-items:center;gap:0.7rem}
+.adm-blocco-tag button{background:none;border:none;color:var(--red);cursor:pointer;font-size:0.9rem;line-height:1;padding:0}
+.adm-no-blocchi{color:var(--dim);font-size:0.8rem;font-style:italic}
+/* Toast admin */
+#admToast{position:fixed;bottom:2rem;right:2rem;background:var(--surface-2);border:1px solid rgba(184,150,90,0.2);padding:0.9rem 1.5rem;font-size:0.78rem;z-index:10000;transform:translateY(80px);opacity:0;transition:all 0.3s var(--expo);pointer-events:none;max-width:300px}
+#admToast.show{transform:translateY(0);opacity:1}
+#admToast.ok{border-color:rgba(74,222,128,0.3);color:var(--green)}
+#admToast.err{border-color:rgba(248,113,113,0.3);color:var(--red)}
+.adm-spinner{width:22px;height:22px;border:2px solid rgba(184,150,90,0.15);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;margin:2.5rem auto}
+@media(max-width:700px){
+  .adm-user-lbl{display:none}
+  .adm-stats{grid-template-columns:1fr 1fr}
+  .adm-block-form{flex-direction:column}
+  .adm-bf input,.adm-bf select{min-width:100%;width:100%}
+}
+</style>
+
+<div id="adminOverlay">
+  <!-- Header -->
+  <header class="adm-header">
+    <div class="adm-logo">✦ Admin · Torregrossa barber</div>
+    <div class="adm-header-right">
+      <span class="adm-user-lbl" id="admUserLbl"></span>
+      <button class="adm-btn-out" onclick="admLogout()">Esci</button>
+      <button class="adm-btn-close" onclick="closeAdmin()" title="Chiudi">✕</button>
+    </div>
+  </header>
+
+  <!-- Login -->
+  <div id="admLogin">
+    <div class="adm-login-card">
+      <div class="adm-login-logo">Torregrossa barber</div>
+      <div class="adm-login-sub">Area Riservata Admin</div>
+      <div class="adm-field">
+        <label>Email</label>
+        <input type="email" id="admEmail" placeholder="admin@email.com" autocomplete="email"/>
+      </div>
+      <div class="adm-field">
+        <label>Password</label>
+        <input type="password" id="admPass" placeholder="••••••••" autocomplete="current-password"
+               onkeydown="if(event.key==='Enter')admLogin()"/>
+      </div>
+      <button class="adm-btn-login" onclick="admLogin()">Accedi ✦</button>
+      <div class="adm-login-err" id="admLoginErr"></div>
+    </div>
+  </div>
+
+  <!-- Panel (hidden until logged in) -->
+  <div id="admPanel" style="display:none">
+    <div class="adm-body">
+
+      <!-- Stats -->
+      <div class="adm-stats">
+        <div class="adm-stat"><div class="adm-stat-val" id="aStatOggi">—</div><div class="adm-stat-lbl">Oggi</div></div>
+        <div class="adm-stat"><div class="adm-stat-val" id="aStatAttesa">—</div><div class="adm-stat-lbl">In Attesa</div></div>
+        <div class="adm-stat"><div class="adm-stat-val" id="aStatSett">—</div><div class="adm-stat-lbl">Questa Settimana</div></div>
+        <div class="adm-stat"><div class="adm-stat-val" id="aStatTot">—</div><div class="adm-stat-lbl">Totale Attive</div></div>
+      </div>
+
+      <!-- Prenotazioni -->
+      <div class="adm-sec">Prenotazioni</div>
+      <div class="adm-filters">
+        <input type="date" id="aFDate"/>
+        <select id="aFBarber">
+          <option value="">Tutti i barbieri</option>
+          <option value="Giovanni">Giovanni</option>
+          <option value="Marco">Marco</option>
+        </select>
+        <select id="aFStato">
+          <option value="">Tutti gli stati</option>
+          <option value="in_attesa">In attesa</option>
+          <option value="confermata">Confermata</option>
+          <option value="cancellata">Cancellata</option>
+        </select>
+        <button class="adm-f-btn" onclick="admLoadBookings()">Filtra</button>
+        <button class="adm-f-rst" onclick="admResetFilters()">Reset</button>
+      </div>
+      <div class="adm-table-wrap">
+        <table>
+          <thead><tr>
+            <th>Cliente</th><th>Contatto</th><th>Servizio</th>
+            <th>Barbiere</th><th>Data</th><th>Orario</th>
+            <th>Prezzo</th><th>Stato</th><th>Azioni</th>
+          </tr></thead>
+          <tbody id="admBookingsBody">
+            <tr><td colspan="9"><div class="adm-spinner"></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Blocchi -->
+      <div class="adm-sec">Gestione Blocchi Orari</div>
+      <div class="adm-block-panel">
+        <div class="adm-block-form">
+          <div class="adm-bf">
+            <label>Data</label>
+            <input type="date" id="aBDate"/>
+          </div>
+          <div class="adm-bf">
+            <label>Barbiere</label>
+            <select id="aBBarber">
+              <option value="Giovanni">Giovanni</option>
+              <option value="Marco">Marco</option>
+            </select>
+          </div>
+          <div class="adm-bf">
+            <label>Orario</label>
+            <select id="aBTime"></select>
+          </div>
+          <button class="adm-btn-block" onclick="admAddBlock()">+ Blocca Orario</button>
+        </div>
+        <div class="adm-blocchi-list" id="admBlocchiList">
+          <div class="adm-no-blocchi">Nessun blocco attivo</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="admToast"></div>
+
+<script>
+// ── ADMIN OVERLAY ──────────────────────────────────────────────
+
+const ADM_SLOTS = [];
+for(let h=9;h<=19;h++) for(let m=0;m<60;m+=30){
+  if(h===19&&m>0) break;
+  ADM_SLOTS.push(`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`);
+}
+
+// Popola orari blocchi
+(function(){
+  const s = document.getElementById('aBTime');
+  ADM_SLOTS.forEach(t => { const o=document.createElement('option'); o.value=o.textContent=t; s.appendChild(o); });
+  document.getElementById('aBDate').min = admTodayISO();
+})();
+
+async function openAdmin() {
+  document.getElementById('adminOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  const { data:{ session } } = await _sb.auth.getSession();
+  if(session) admShowPanel(session.user);
+  else        admShowLogin();
+}
+
+function closeAdmin() {
+  document.getElementById('adminOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function admShowLogin() {
+  document.getElementById('admLogin').style.display = 'flex';
+  document.getElementById('admPanel').style.display = 'none';
+  document.getElementById('admPass').value = '';
+  document.getElementById('admLoginErr').textContent = '';
+}
+
+function admShowPanel(user) {
+  document.getElementById('admLogin').style.display = 'none';
+  document.getElementById('admPanel').style.display = 'block';
+  document.getElementById('admUserLbl').textContent = user.email;
+  admLoadBookings();
+  admLoadBlocchi();
+}
+
+async function admLogin() {
+  const email = document.getElementById('admEmail').value.trim();
+  const pass  = document.getElementById('admPass').value;
+  const errEl = document.getElementById('admLoginErr');
+  errEl.textContent = '';
+  if(!email||!pass){ errEl.textContent='Inserisci email e password.'; return; }
+  if(!_sb || !_sb.auth){ errEl.textContent='Connessione non pronta. Riprova tra qualche secondo.'; return; }
+  try {
+    const { data, error } = await _sb.auth.signInWithPassword({ email, password: pass });
+    if(error){ errEl.textContent='Credenziali non valide: ' + error.message; return; }
+    admShowPanel(data.user);
+  } catch(e) {
+    errEl.textContent='Errore: ' + e.message;
+  }
+}
+
+async function admLogout() {
+  await _sb.auth.signOut();
+  admShowLogin();
+}
+
+// ── Prenotazioni ──
+async function admLoadBookings() {
+  const tbody = document.getElementById('admBookingsBody');
+  tbody.innerHTML = '<tr><td colspan="9"><div class="adm-spinner"></div></td></tr>';
+
+  let q = _sb.from('prenotazioni').select('*')
+    .order('data',{ascending:true}).order('orario',{ascending:true});
+
+  const fD = document.getElementById('aFDate').value;
+  const fB = document.getElementById('aFBarber').value;
+  const fS = document.getElementById('aFStato').value;
+  if(fD) q=q.eq('data',fD);
+  if(fB) q=q.eq('barbiere',fB);
+  if(fS) q=q.eq('stato',fS);
+
+  const { data, error } = await q;
+  if(error){ admToast('Errore caricamento','err'); return; }
+  admUpdateStats(data||[]);
+  admRenderBookings(data||[]);
+}
+
+function admRenderBookings(rows) {
+  const tbody = document.getElementById('admBookingsBody');
+  if(!rows.length){ tbody.innerHTML='<tr><td colspan="9" class="adm-no-data">Nessuna prenotazione trovata</td></tr>'; return; }
+  tbody.innerHTML = rows.map(r => {
+    const bc = {confermata:'adm-badge-ok',cancellata:'adm-badge-no',in_attesa:'adm-badge-attesa'}[r.stato]||'adm-badge-attesa';
+    const bl = {confermata:'Confermata',cancellata:'Cancellata',in_attesa:'In Attesa'}[r.stato]||r.stato;
+    const c  = r.stato==='in_attesa' ? `<button class="adm-act adm-act-ok" onclick="admSetStato(${r.id},'confermata')">Conferma</button>` : '';
+    const x  = r.stato!=='cancellata'? `<button class="adm-act adm-act-no" onclick="admSetStato(${r.id},'cancellata')">Cancella</button>` : '';
+    const d  = `<button class="adm-act adm-act-del" onclick="admDelete(${r.id})">✕</button>`;
+    const note = r.note?`<div style="font-size:0.7rem;color:var(--dim);margin-top:0.2rem">${admEsc(r.note)}</div>`:'';
+    return `<tr>
+      <td><strong style="font-weight:500">${admEsc(r.nome)}</strong>${note}</td>
+      <td><div style="font-size:0.78rem">${admEsc(r.email)}</div>${r.telefono?`<div style="color:var(--dim);font-size:0.72rem">${admEsc(r.telefono)}</div>`:''}</td>
+      <td><div>${admEsc(r.servizio)}</div><div style="color:var(--dim);font-size:0.7rem">${admEsc(r.durata||'')}</div></td>
+      <td>${admEsc(r.barbiere)}</td>
+      <td style="white-space:nowrap">${admFmtDate(r.data)}</td>
+      <td style="font-family:'Cormorant Garamond',serif;font-size:1.05rem;color:var(--gold-light)">${admEsc(r.orario)}</td>
+      <td style="color:var(--gold);font-weight:500">${r.prezzo?r.prezzo+'€':'—'}</td>
+      <td><span class="adm-badge ${bc}">${bl}</span></td>
+      <td><div class="adm-act-row">${c}${x}${d}</div></td>
+    </tr>`;
+  }).join('');
+}
+
+async function admSetStato(id, stato) {
+  const { error } = await _sb.from('prenotazioni').update({stato}).eq('id',id);
+  if(error){ admToast('Errore aggiornamento','err'); return; }
+  admToast(stato==='confermata'?'Confermata ✓':'Cancellata', stato==='confermata'?'ok':'err');
+  admLoadBookings();
+}
+
+async function admDelete(id) {
+  if(!confirm('Eliminare definitivamente questa prenotazione?')) return;
+  const { error } = await _sb.from('prenotazioni').delete().eq('id',id);
+  if(error){ admToast('Errore eliminazione','err'); return; }
+  admToast('Eliminata','ok');
+  admLoadBookings();
+}
+
+function admUpdateStats(rows) {
+  const t=admTodayISO(), ws=admWeekStart(), we=admWeekEnd();
+  document.getElementById('aStatOggi').textContent   = rows.filter(r=>r.data===t&&r.stato!=='cancellata').length;
+  document.getElementById('aStatAttesa').textContent = rows.filter(r=>r.stato==='in_attesa').length;
+  document.getElementById('aStatSett').textContent   = rows.filter(r=>r.data>=ws&&r.data<=we&&r.stato!=='cancellata').length;
+  document.getElementById('aStatTot').textContent    = rows.filter(r=>r.stato!=='cancellata').length;
+}
+
+function admResetFilters() {
+  ['aFDate','aFBarber','aFStato'].forEach(id=>document.getElementById(id).value='');
+  admLoadBookings();
+}
+
+// ── Blocchi ──
+async function admLoadBlocchi() {
+  const { data, error } = await _sb.from('blocchi').select('*')
+    .gte('data',admTodayISO()).order('data').order('orario');
+  if(error){ admToast('Errore blocchi','err'); return; }
+  admRenderBlocchi(data||[]);
+}
+
+function admRenderBlocchi(rows) {
+  const el = document.getElementById('admBlocchiList');
+  if(!rows.length){ el.innerHTML='<div class="adm-no-blocchi">Nessun blocco attivo</div>'; return; }
+  el.innerHTML = rows.map(b=>`<div class="adm-blocco-tag"><span>${admFmtDate(b.data)} · ${admEsc(b.orario)} · ${admEsc(b.barbiere)}</span><button onclick="admRemoveBlock(${b.id})">✕</button></div>`).join('');
+}
+
+async function admAddBlock() {
+  const data=document.getElementById('aBDate').value;
+  const barbiere=document.getElementById('aBBarber').value;
+  const orario=document.getElementById('aBTime').value;
+  if(!data){ admToast('Seleziona una data','err'); return; }
+  const { data:ex } = await _sb.from('blocchi').select('id').eq('data',data).eq('barbiere',barbiere).eq('orario',orario);
+  if(ex&&ex.length){ admToast('Blocco già presente','err'); return; }
+  const { error } = await _sb.from('blocchi').insert([{data,barbiere,orario}]);
+  if(error){ admToast('Errore inserimento','err'); return; }
+  admToast('Orario bloccato ✓','ok');
+  admLoadBlocchi();
+}
+
+async function admRemoveBlock(id) {
+  const { error } = await _sb.from('blocchi').delete().eq('id',id);
+  if(error){ admToast('Errore rimozione','err'); return; }
+  admToast('Blocco rimosso ✓','ok');
+  admLoadBlocchi();
+}
+
+// ── Utils ──
+function admTodayISO(){ return new Date().toISOString().split('T')[0]; }
+function admWeekStart(){ const d=new Date(),diff=d.getDate()-d.getDay()+(d.getDay()===0?-6:1); return new Date(new Date().setDate(diff)).toISOString().split('T')[0]; }
+function admWeekEnd(){ const d=new Date(),diff=d.getDate()-d.getDay()+(d.getDay()===0?0:7); return new Date(new Date().setDate(diff)).toISOString().split('T')[0]; }
+function admFmtDate(iso){ if(!iso)return'—'; const[y,m,d]=iso.split('-'); return `${['Dom','Lun','Mar','Mer','Gio','Ven','Sab'][new Date(+y,+m-1,+d).getDay()]} ${d}/${m}/${y}`; }
+function admEsc(s){ if(s==null)return''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+let admToastTimer;
+function admToast(msg,type='ok'){
+  const t=document.getElementById('admToast');
+  t.textContent=msg; t.className=`show ${type}`;
+  clearTimeout(admToastTimer);
+  admToastTimer=setTimeout(()=>{ t.className=''; },3200);
+}
+
+// ── CANCELLAZIONE ────────────────────────────────────────────────
+
+// Cancella dal modal di conferma (subito dopo aver prenotato)
+async function cancelFromModal() {
+  if(!lastBookingId && !lastCancelToken) { toast('⚠️', 'Nessuna prenotazione da annullare'); return; }
+  if(!confirm('Sei sicuro di voler annullare questa prenotazione?')) return;
+  closeModal();
+  await executeCancellation(lastBookingId, lastCancelToken, null);
+}
+
+// Logica comune di cancellazione
+async function executeCancellation(bookingId, token, bookingData) {
+  if(!_sb) { showCancelResult('error'); return; }
+  try {
+    const filter = bookingId
+      ? _sb.from('prenotazioni').update({stato:'cancellata'}).eq('id', bookingId)
+      : _sb.from('prenotazioni').update({stato:'cancellata'}).eq('cancel_token', token);
+    const { error } = await filter;
+    if(error) throw error;
+    // Notifica al barbiere
+    if(bookingData) {
+      const WDAYS2=['domenica','lunedì','martedì','mercoledì','giovedì','venerdì','sabato'];
+      const MONTHS2=['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
+      const [y,mo,d]=bookingData.data.split('-').map(Number);
+      const dt=new Date(y,mo-1,d);
+      const ds=`${WDAYS2[dt.getDay()]} ${d} ${MONTHS2[mo-1]} ${y}`;
+      await w3f({ access_key: W3F_KEY, subject:`❌ Cancellazione — ${bookingData.nome} | ${bookingData.data} ${bookingData.orario}`, name: bookingData.nome, email: bookingData.email, message:`PRENOTAZIONE CANCELLATA\n\nCliente: ${bookingData.nome}\nEmail: ${bookingData.email}\nServizio: ${bookingData.servizio}\nData: ${ds}\nOrario: ${bookingData.orario}` }).catch(()=>{});
+    }
+    showCancelResult('success');
+    toast('✅', 'Prenotazione annullata');
+  } catch(e) {
+    showCancelResult('error');
+  }
+}
+
+function showCancelResult(status) {
+  const modal   = document.getElementById('cancelModal');
+  const content = document.getElementById('cancelContent');
+  if(status === 'success') {
+    content.innerHTML = `
+      <div style="font-size:2.5rem;margin-bottom:1rem;">✅</div>
+      <h2 class="serif" style="font-size:1.6rem;margin-bottom:0.8rem;">Prenotazione annullata</h2>
+      <p style="font-size:0.8rem;color:var(--warm-gray);line-height:1.7;">La prenotazione è stata annullata con successo. A presto da Giovanni!</p>
+      <button class="btn btn-gold" style="width:100%;justify-content:center;margin-top:1.5rem;" onclick="document.getElementById('cancelModal').classList.remove('open');history.replaceState(null,'',window.location.pathname)">Chiudi</button>`;
+  } else if(status === 'already') {
+    content.innerHTML = `
+      <div style="font-size:2.5rem;margin-bottom:1rem;">ℹ️</div>
+      <h2 class="serif" style="font-size:1.6rem;margin-bottom:0.8rem;">Già annullata</h2>
+      <p style="font-size:0.8rem;color:var(--warm-gray);line-height:1.7;">Questa prenotazione è già stata annullata in precedenza.</p>
+      <button class="btn btn-o" style="width:100%;justify-content:center;margin-top:1.5rem;" onclick="document.getElementById('cancelModal').classList.remove('open');history.replaceState(null,'',window.location.pathname)">Chiudi</button>`;
+  } else if(status === 'notfound') {
+    content.innerHTML = `
+      <div style="font-size:2.5rem;margin-bottom:1rem;">❌</div>
+      <h2 class="serif" style="font-size:1.6rem;margin-bottom:0.8rem;">Link non valido</h2>
+      <p style="font-size:0.8rem;color:var(--warm-gray);line-height:1.7;">Non è stato possibile trovare questa prenotazione. Il link potrebbe essere scaduto o già utilizzato.</p>
+      <button class="btn btn-o" style="width:100%;justify-content:center;margin-top:1.5rem;" onclick="document.getElementById('cancelModal').classList.remove('open');history.replaceState(null,'',window.location.pathname)">Chiudi</button>`;
+  } else {
+    content.innerHTML = `
+      <div style="font-size:2.5rem;margin-bottom:1rem;">⚠️</div>
+      <h2 class="serif" style="font-size:1.6rem;margin-bottom:0.8rem;">Errore</h2>
+      <p style="font-size:0.8rem;color:var(--warm-gray);line-height:1.7;">Si è verificato un errore. Chiamaci al +39 328 096 2635 per annullare.</p>
+      <button class="btn btn-o" style="width:100%;justify-content:center;margin-top:1.5rem;" onclick="document.getElementById('cancelModal').classList.remove('open');history.replaceState(null,'',window.location.pathname)">Chiudi</button>`;
+  }
+  modal.classList.add('open');
+}
+
+// Controlla ?cancel=TOKEN all'apertura della pagina
+(async function checkCancelLink() {
+  const token = new URLSearchParams(window.location.search).get('cancel');
+  if(!token) return;
+  // Mostra subito il modal in loading
+  document.getElementById('cancelModal').classList.add('open');
+  // Aspetta Supabase (max 4s)
+  let attempts = 0;
+  while(!_sb && attempts < 20) {
+    await new Promise(r => setTimeout(r, 200));
+    attempts++;
+  }
+  if(!_sb) { showCancelResult('error'); return; }
+  try {
+    const { data, error } = await _sb
+      .from('prenotazioni').select('*').eq('cancel_token', token).single();
+    if(error || !data) { showCancelResult('notfound'); return; }
+    if(data.stato === 'cancellata') { showCancelResult('already'); return; }
+    // Chiede conferma
+    const content = document.getElementById('cancelContent');
+    const WDAYS2=['domenica','lunedì','martedì','mercoledì','giovedì','venerdì','sabato'];
+    const MONTHS2=['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
+    const [y,mo,d]=data.data.split('-').map(Number);
+    const dt=new Date(y,mo-1,d);
+    const ds=`${WDAYS2[dt.getDay()]} ${d} ${MONTHS2[mo-1]} ${y}`;
+    content.innerHTML = `
+      <div style="font-size:2.5rem;margin-bottom:1rem;">🗓️</div>
+      <h2 class="serif" style="font-size:1.6rem;margin-bottom:0.8rem;">Annulla prenotazione</h2>
+      <div style="background:var(--surface-3,#1a1712);border-left:2px solid var(--gold);padding:1rem 1.2rem;margin-bottom:1.2rem;text-align:left;">
+        <div style="font-size:0.8rem;line-height:1.9;">
+          <strong>${data.servizio}</strong><br>
+          ${ds} alle ${data.orario}<br>
+          Barbiere: ${data.barbiere}
+        </div>
+      </div>
+      <p style="font-size:0.75rem;color:var(--dim,#7a7060);margin-bottom:1.2rem;">Sei sicuro di voler annullare questa prenotazione?</p>
+      <button class="btn btn-gold" style="width:100%;justify-content:center;margin-bottom:0.6rem;" onclick="executeCancellation(null,'${token}',${JSON.stringify(data).replace(/</g,'\\u003c').replace(/"/g,'&quot;')})">Sì, annulla</button>
+      <button class="btn btn-o" style="width:100%;justify-content:center;" onclick="document.getElementById('cancelModal').classList.remove('open');history.replaceState(null,'',window.location.pathname)">No, torna indietro</button>`;
+  } catch(e) {
+    showCancelResult('error');
+  }
+})();
+</script>
+<!-- COOKIE BANNER -->
+<div id="cookieBanner" style="display:none;">
+  <p>Questo sito utilizza cookie tecnici necessari al funzionamento. Nessun dato viene condiviso con terze parti a scopo pubblicitario. <a href="#" onclick="return false;">Privacy Policy</a></p>
+  <div class="cookie-btns">
+    <button class="cookie-rej" onclick="cookieChoice(false)">Rifiuta</button>
+    <button class="cookie-acc" onclick="cookieChoice(true)">Accetta</button>
+  </div>
+</div>
+<script>
+(function(){
+  if(!localStorage.getItem('cookie_consent')){
+    document.getElementById('cookieBanner').style.display='flex';
+  }
+})();
+function cookieChoice(accepted){
+  localStorage.setItem('cookie_consent', accepted ? 'accepted' : 'rejected');
+  document.getElementById('cookieBanner').style.display='none';
+}
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" onload="initEmailJS()"></script>
+<span onclick="openAdmin()" style="position:fixed;bottom:8px;right:8px;width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.08);cursor:pointer;z-index:9999;display:block;"></span>
+</body>
+</html>

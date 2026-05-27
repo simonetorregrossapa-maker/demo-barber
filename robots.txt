@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Blocca il pannello admin dal crawl
+Disallow: /#admin
+
+Sitemap: https://torregrossa-barber.it/sitemap.xml
+
+# AGGIORNA: sostituisci "torregrossa-barber.it" con il dominio reale del cliente

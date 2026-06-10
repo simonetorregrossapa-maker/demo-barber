@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feedback</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 480px; margin: 40px auto; padding: 20px; color: #222; }
+    h2 { font-size: 22px; }
+    textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 15px; resize: vertical; }
+    button { margin-top: 16px; width: 100%; padding: 14px; background: #222; color: #fff; border: none; border-radius: 10px; font-size: 16px; cursor: pointer; }
+    .grazie { display: none; text-align: center; padding: 40px 0; }
+  </style>
+</head>
+<body>
+  <div id="form">
+    <h2>Ci dispiace 😔</h2>
+    <p>Raccontaci cosa non è andato — Giovanni leggerà personalmente il tuo messaggio.</p>
+    <textarea id="msg" rows="5" placeholder="Scrivi qui..."></textarea>
+    <button onclick="invia()">Invia feedback</button>
+  </div>
+  <div class="grazie" id="grazie">
+    <h2>Grazie per il feedback 🙏</h2>
+    <p>Giovanni ti contatterà presto per rimediare.</p>
+  </div>
+  <script>
+    function invia() {
+      const msg = document.getElementById("msg").value.trim();
+      if (!msg) return alert("Scrivi qualcosa prima di inviare.");
+      document.getElementById("form").style.display = "none";
+      document.getElementById("grazie").style.display = "block";
+    }
+  </script>
+</body>
+</html>

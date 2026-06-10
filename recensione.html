@@ -8,27 +8,29 @@
 <body>
   <script>
     const placeId = "ChIJpUF3jBrpGRMR9n0lWfQdR6U";
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const reviewUrl = `https://search.google.com/local/writereview?placeid=${placeId}`;
     const isAndroid = /Android/.test(navigator.userAgent);
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
-    if (isIOS) {
-      window.location.href = `comgooglemaps://?action=reviewplace&place_id=${placeId}`;
-      setTimeout(() => {
-        window.location.href = `https://search.google.com/local/writereview?placeid=${placeId}`;
-      }, 1500);
-    } else if (isAndroid) {
+    let appOpened = false;
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) appOpened = true;
+    });
+
+    if (isAndroid) {
       window.location.href = `intent://maps.google.com/maps?q=place_id:${placeId}#Intent;scheme=https;package=com.google.android.apps.maps;action=android.intent.action.VIEW;end`;
-      setTimeout(() => {
-        window.location.href = `https://search.google.com/local/writereview?placeid=${placeId}`;
-      }, 1500);
+    } else if (isIOS) {
+      window.location.href = `comgooglemaps://?action=reviewplace&place_id=${placeId}`;
     } else {
-      window.location.href = `https://search.google.com/local/writereview?placeid=${placeId}`;
+      window.location.href = reviewUrl;
     }
+
+    setTimeout(() => {
+      if (!appOpened) {
+        window.location.href = reviewUrl;
+      }
+    }, 2000);
   </script>
-  <noscript>
-    <a href="https://search.google.com/local/writereview?placeid=ChIJpUF3jBrpGRMR9n0lWfQdR6U">
-      Clicca qui per lasciare una recensione
-    </a>
-  </noscript>
 </body>
 </html>

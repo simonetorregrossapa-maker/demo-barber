@@ -1374,10 +1374,9 @@ setTimeout(function(){
         </div>
         <input class="form-inp" type="email" placeholder="Email (per la conferma) *" id="bEmail" autocomplete="email"/>
         <textarea class="form-inp" rows="2" placeholder="Note (opzionale)" id="bNotes" style="resize:none;"></textarea>
-        <label style="display:flex;gap:0.5rem;align-items:flex-start;font-size:0.62rem;color:var(--dim);margin-top:0.6rem;line-height:1.4;cursor:pointer;">
-          <input type="checkbox" id="bConsent" style="margin-top:0.15rem;flex-shrink:0;" checked/>
-          <span>Acconsento a ricevere un'email per lasciare una recensione dopo il servizio.</span>
-        </label>
+        <p style="font-size:0.62rem;color:var(--dim);margin-top:0.6rem;line-height:1.4;">
+          Completando la prenotazione accetti i <a href="#" style="color:var(--dim);">termini del servizio</a> e acconsenti a ricevere un messaggio di follow-up dopo il tuo appuntamento.
+        </p>
       </div>
 
       <button class="btn btn-gold" style="width:100%;justify-content:center;padding:1.1rem;" id="submitBtn" onclick="submitBooking()">
@@ -1865,7 +1864,7 @@ async function submitBooking() {
   const email = document.getElementById('bEmail').value.trim();
   const phone = document.getElementById('bPhone').value.trim();
   const notes = document.getElementById('bNotes').value.trim();
-  const consenso = document.getElementById('bConsent') ? document.getElementById('bConsent').checked : false;
+  const consenso = true;
 
   if(!name)  { toast('⚠️', 'Inserisci il tuo nome'); return; }
   if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { toast('⚠️', 'Email non valida'); return; }

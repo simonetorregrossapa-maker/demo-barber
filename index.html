@@ -1799,10 +1799,13 @@ async function loadAvailability(date, barber) {
     ]);
     const [resBookings, resBlocked] = await Promise.race([q, t]);
     if(loading) loading.style.display = 'none';
+    // Un blocco con orario 'GIORNO' chiude l'intera giornata → espandilo su tutti gli slot
+    const blockedTimes = ((resBlocked && resBlocked.data) || [])
+      .flatMap(r => r.orario === 'GIORNO' ? ALL_SLOTS : [r.orario]);
     const booked = (resBookings && !resBookings.error)
       ? [
           ...resBookings.data.map(r => r.orario),
-          ...((resBlocked && resBlocked.data) || []).map(r => r.orario)
+          ...blockedTimes
         ]
       : [];
     renderTimeSlots(booked, date, barber);
@@ -2065,7 +2068,10 @@ document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal();
 .adm-btn-block:hover{background:rgba(248,113,113,0.22)}
 .adm-blocchi-list{display:flex;flex-wrap:wrap;gap:0.6rem}
 .adm-blocco-tag{background:var(--surface-3);border:1px solid rgba(248,113,113,0.18);padding:0.35rem 0.8rem;font-size:0.72rem;display:flex;align-items:center;gap:0.7rem}
+.adm-blocco-tag.is-day{border-color:rgba(248,113,113,0.4);background:rgba(248,113,113,0.08)}
 .adm-blocco-tag button{background:none;border:none;color:var(--red);cursor:pointer;font-size:0.9rem;line-height:1;padding:0}
+.adm-block-sub{font-size:0.6rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--gold-light);margin:0 0 0.9rem;padding-bottom:0.5rem;border-bottom:1px solid rgba(184,150,90,0.12)}
+.adm-block-sub:not(:first-child){margin-top:0.6rem}
 .adm-no-blocchi{color:var(--dim);font-size:0.8rem;font-style:italic}
 /* Toast admin */
 #admToast{position:fixed;bottom:2rem;right:2rem;background:var(--surface-2);border:1px solid rgba(184,150,90,0.2);padding:0.9rem 1.5rem;font-size:0.78rem;z-index:10000;transform:translateY(80px);opacity:0;transition:all 0.3s var(--expo);pointer-events:none;max-width:300px}
@@ -2157,6 +2163,7 @@ document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal();
       <!-- Blocchi -->
       <div class="adm-sec">Gestione Blocchi Orari</div>
       <div class="adm-block-panel">
+        <div class="adm-block-sub">Blocca un singolo orario</div>
         <div class="adm-block-form">
           <div class="adm-bf">
             <label>Data</label>
@@ -2175,6 +2182,27 @@ document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal();
           </div>
           <button class="adm-btn-block" onclick="admAddBlock()">+ Blocca Orario</button>
         </div>
+
+        <div class="adm-block-sub">Blocca uno o più giorni interi</div>
+        <div class="adm-block-form">
+          <div class="adm-bf">
+            <label>Dal giorno</label>
+            <input type="date" id="aBDayFrom"/>
+          </div>
+          <div class="adm-bf">
+            <label>Al giorno <span style="opacity:.55;letter-spacing:0">(opzionale)</span></label>
+            <input type="date" id="aBDayTo"/>
+          </div>
+          <div class="adm-bf">
+            <label>Barbiere</label>
+            <select id="aBDayBarber">
+              <option value="Giovanni">Giovanni</option>
+              <option value="Marco">Marco</option>
+            </select>
+          </div>
+          <button class="adm-btn-block" onclick="admAddDayBlock()">+ Blocca giorno/i</button>
+        </div>
+
         <div class="adm-blocchi-list" id="admBlocchiList">
           <div class="adm-no-blocchi">Nessun blocco attivo</div>
         </div>
@@ -2199,7 +2227,10 @@ for(let h=9;h<=19;h++) for(let m=0;m<60;m+=30){
 (function(){
   const s = document.getElementById('aBTime');
   ADM_SLOTS.forEach(t => { const o=document.createElement('option'); o.value=o.textContent=t; s.appendChild(o); });
-  document.getElementById('aBDate').min = admTodayISO();
+  const today = admTodayISO();
+  document.getElementById('aBDate').min = today;
+  document.getElementById('aBDayFrom').min = today;
+  document.getElementById('aBDayTo').min = today;
 })();
 
 async function openAdmin() {
@@ -2335,7 +2366,11 @@ async function admLoadBlocchi() {
 function admRenderBlocchi(rows) {
   const el = document.getElementById('admBlocchiList');
   if(!rows.length){ el.innerHTML='<div class="adm-no-blocchi">Nessun blocco attivo</div>'; return; }
-  el.innerHTML = rows.map(b=>`<div class="adm-blocco-tag"><span>${admFmtDate(b.data)} · ${admEsc(b.orario)} · ${admEsc(b.barbiere)}</span><button onclick="admRemoveBlock(${b.id})">✕</button></div>`).join('');
+  el.innerHTML = rows.map(b=>{
+    const isDay = b.orario === 'GIORNO';
+    const label = isDay ? '📅 Giorno intero' : admEsc(b.orario);
+    return `<div class="adm-blocco-tag${isDay?' is-day':''}"><span>${admFmtDate(b.data)} · ${label} · ${admEsc(b.barbiere)}</span><button onclick="admRemoveBlock(${b.id})">✕</button></div>`;
+  }).join('');
 }
 
 async function admAddBlock() {
@@ -2348,6 +2383,33 @@ async function admAddBlock() {
   const { error } = await _sb.from('blocchi').insert([{data,barbiere,orario}]);
   if(error){ admToast('Errore inserimento','err'); return; }
   admToast('Orario bloccato ✓','ok');
+  admLoadBlocchi();
+}
+
+async function admAddDayBlock() {
+  const from = document.getElementById('aBDayFrom').value;
+  const to   = document.getElementById('aBDayTo').value || from;
+  const barbiere = document.getElementById('aBDayBarber').value;
+  if(!from){ admToast('Seleziona almeno il giorno iniziale','err'); return; }
+  if(to < from){ admToast('Il giorno finale precede quello iniziale','err'); return; }
+
+  // Costruisci l'elenco dei giorni nell'intervallo
+  const dates = [];
+  for(let d=new Date(from+'T00:00:00'), end=new Date(to+'T00:00:00'); d<=end; d.setDate(d.getDate()+1)){
+    dates.push(d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'));
+  }
+  if(dates.length > 90){ admToast('Intervallo troppo ampio (max 90 giorni)','err'); return; }
+
+  // Salta i giorni già bloccati interamente per questo barbiere
+  const { data:ex } = await _sb.from('blocchi').select('data')
+    .eq('barbiere',barbiere).eq('orario','GIORNO').in('data',dates);
+  const already = new Set((ex||[]).map(r=>r.data));
+  const rows = dates.filter(dt=>!already.has(dt)).map(dt=>({data:dt,barbiere,orario:'GIORNO'}));
+  if(!rows.length){ admToast('Giorni già bloccati','err'); return; }
+
+  const { error } = await _sb.from('blocchi').insert(rows);
+  if(error){ admToast('Errore inserimento','err'); return; }
+  admToast(rows.length>1 ? `${rows.length} giorni bloccati ✓` : 'Giorno bloccato ✓','ok');
   admLoadBlocchi();
 }
 
